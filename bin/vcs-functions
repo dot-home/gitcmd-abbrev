@@ -9,7 +9,7 @@
 #
 path_recurse_up() {
     local dir=$([ -d "$1" ] && echo "$1" || dirname "$1"); shift
-    dir=$(cd "$dir" && /bin/pwd)
+    dir=$(cd "$dir" && pwd -P)
     while [ "$dir" != / ]; do
         "$@" "$dir" && return \
                     || dir=$(dirname "$dir")
