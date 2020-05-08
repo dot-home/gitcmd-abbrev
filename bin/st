@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  st - show status of one or more VCS checkouts or files in checkouts.
 #
