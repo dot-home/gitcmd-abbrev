@@ -173,8 +173,12 @@ gpack()     {
     #   The gc ensures that we don't have unrefrenced objects, but will
     #   leave loose objects not referenced by branches (e.g., reflog
     #   stuff). The repack takes care of this.
-    git gc --aggressive
+    #   This also removes the pointless sample hooks that git loves to create.
+    git gc --aggressive || return
     git repack -adk         # Also packs unreachable objects
+    local gitdir=$(git rev-parse --git-dir)
+    rm "$gitdir"/hooks/*.sample 2>/dev/null || true
+    rmdir "$gitdir/hooks" 2>/dev/null || true
 }
 
 
