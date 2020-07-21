@@ -167,6 +167,16 @@ iclean()    { clean -dX "$@"; }; copy_git_completion iclean git clean
 gsub()      { git submodule "$@"; }
 copy_git_completion gsub git submodule
 
+gpack()     {
+    #   Pack down a repo to the minimun number of files. This is useful
+    #   when archiving repos, sync'ing filesystems, etc.
+    #   The gc ensures that we don't have unrefrenced objects, but will
+    #   leave loose objects not referenced by branches (e.g., reflog
+    #   stuff). The repack takes care of this.
+    git gc --aggressive
+    git repack -adk         # Also packs unreachable objects
+}
+
 
 ############################################################
 # git branch
