@@ -177,8 +177,9 @@ gpack()     {
     git gc --aggressive || return
     git repack -adk         # Also packs unreachable objects
     local gitdir=$(git rev-parse --git-dir)
-    rm "$gitdir"/hooks/*.sample 2>/dev/null || true
-    rmdir "$gitdir/hooks" 2>/dev/null || true
+    rm "$gitdir"/hooks/*.sample "$gitdir"/modules/*/hooks/*.sample \
+        2>/dev/null || true
+    rmdir "$gitdir"/hooks "$gitdir"/modules/*/hooks 2>/dev/null || true
 }
 
 
