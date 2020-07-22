@@ -174,7 +174,12 @@ gpack()     {
     #   leave loose objects not referenced by branches (e.g., reflog
     #   stuff). The repack takes care of this.
     #   This also removes the pointless sample hooks that git loves to create.
-    git gc --aggressive || return
+    #
+    #   XXX Argument handling is currently wrong. We should accept
+    #   --aggressive to pass to `gc`, and any other args should be for
+    #   `git` itself (e.g., --git-dir).
+    #
+    git gc "$@" || return
     git repack -adk         # Also packs unreachable objects
     local gitdir=$(git rev-parse --git-dir)
     rm "$gitdir"/hooks/*.sample "$gitdir"/modules/*/hooks/*.sample \
