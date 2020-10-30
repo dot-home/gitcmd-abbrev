@@ -149,7 +149,7 @@ coma()      {
                 git diff-index --quiet --cached HEAD -- && _a='-a'
                 com $_a "$@";
             }; copy_git_completion coma git commit
-camend()    { com --amend "$@"; }; copy_git_completion camend git commit
+cam()       { com --amend "$@"; }; copy_git_completion cam git commit
 cpick()     { git cherry-pick "$@"; }; copy_git_completion cpick git cherry-pick
 
 #   `git clean` with `-n` supplied for you unless you specify `-f`
