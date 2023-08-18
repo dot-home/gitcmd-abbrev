@@ -9,7 +9,7 @@
 #  status message will be printed for each path.
 #
 
-. $(dirname $0)/vcs-functions
+. $(dirname $0)/vcsfunc.bash
 
 summarize_cvs() {
     echo " ?/ ? c  (XXX write me)"
