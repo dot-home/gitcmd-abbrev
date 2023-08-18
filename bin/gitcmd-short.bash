@@ -331,7 +331,7 @@ fetch() {
     git status -bs
 }; copy_git_completion fetch git fetch
 
-pull()  { git pull "$@"; }; copy_git_completion pull git pull
+pull()  { git pull --ff-only "$@"; }; copy_git_completion pull git pull
 
 # Disallow use of -f and --force. If `pushf` doesn't work for you, you
 # can use `git push --force`.
