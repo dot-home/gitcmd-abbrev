@@ -44,7 +44,7 @@ copy_git_completion() {
 
 log()  { git log "$@"; }
 
-logbr() {
+logbr() {   # XXX FIXME
     local -a argv=("$@")
     local branchref=@
     if [[ ${#argv[@]} -gt 0 ]] && [[ ${argv[-1]} != -* ]]; then
@@ -191,6 +191,9 @@ gpack()     {
 ############################################################
 # git branch
 
+#   XXX TODO: This should always show the tracking branch and unpushed
+#   commits (à la `git branch -vv`), and should probably be rewritten
+#   to use `git for-each-ref`, or maybe just `git branch --format`.)
 br() {
     local bropts grep_args=()
     while :; do case "$1" in
@@ -209,7 +212,8 @@ bra()           { br -a "$@"; };    copy_git_completion bra git branch
 brag()          { br -a -g "$@"; }; copy_git_completion brag git branch
 brv()           { br -v "$@"; };    copy_git_completion brv git branch
 
-
+#   XXX FIXME: This is quite broken? It definitely doesn't handle repos
+#   with `main` instead `master` as the main branch.
 mbase() {
     local range_to=false
     [ _"$1" = _-t ] && { range_to=true; shift; }
@@ -274,6 +278,11 @@ copy_git_completion stash git stash
 #   List fetch URLs for the repos given on the command line.
 #   Options:
 #       -o  Show `origin` push URL only
+#
+#   XXX TODO: Fix -o so that it doesn't care about the remote name, but
+#   shows the "primary" remote identified by the one whence the tracking
+#   branch for `main` or `master` comes. (And possibly rename the option.)
+#
 gurl()  {
     local origin_only=''
     [[ $1 = -o ]] && { shift; origin_only='/^origin[[:space:]]/!d'; }
