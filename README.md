@@ -52,6 +52,19 @@ command.
 These commands will tweak the $LESS variable where necessary to produce
 prettier output.
 
+### Terminology Note
+
+- A __branch__ is a sequence of commits. It may or may not be pointed to by
+  a ref, (though it can be garbage-collected if not), and multiple refs may
+  point to the same branch, or different commits on the same branch.
+- A __ref__ is any named pointer to a commit, e.g., as created with the
+  `git branch REFNAME` command. Note that this does _not_ create a new
+  _branch_ as that term is used here: `@` and `REFNAME` are two refs
+  poining to the _same_ branch.
+- A __head__ is any ref pointing to a commit that has no children pointed
+  to by any any other head. (I.e., a head points to the tip of a branch,
+  not the middle of a branch.)
+
 ### Commmit Graph Display (git log)
 
 - `log`: Same as `git log`.
@@ -61,27 +74,27 @@ prettier output.
   see.
 
 - `logp`, `logp1`, `slp1`: As `logs` with the diff from the previous commit
-  as well. `logp1` does this for a single commit, rather than all commits
-  down that branch of the graph. `slp1` does the same with a few blank
-  lines prefixed to clearly separate the commit from previous output in the
-  terminal. (This is useful mainly on tall terminal windows.)
+  (`--patch`) as well. `logp1` does this for a single commit, rather than
+  all commits down that branch of the graph. `slp1` does the same with a
+  few blank lines prefixed to clearly separate the commit from previous
+  output in the terminal. (This is useful mainly on tall terminal windows.)
 
 - `logb`: Brief (one line per commit) graph of current or specified
-  branches. The $LESS variable will have `-RS` appended to enable proper
+  refs. The $LESS variable will have `-RS` appended to enable proper
   display of colour and turn off line wrapping so that all commits take up
   one line. (You can scroll left and right to see more of the commit
   summary line.)
 
-- `logab`: As `logb` but for all branches in the repo.
+- `logab`: As `logb` but for all heads in the repo.
 
-- `logh`: Show "recent" (within a week) changes on branches. (The
-  implementation of this needs to be improved.)
+- `logh`: Show "recent" (within a week) changes on all heads.
+  (The implementation of this needs to be improved.)
 
 - `logm`: Brief graph with commit metadata, using two lines per commit. The
   first line gives the abbreviated commit ID, age of the commit, author,
-  and branch information. The second line is the commit summary line.
+  and ref information. The second line is the commit summary line.
 
-- `logmn`: As `logm` without merge commits.
+- `logmn`: As `logm` without single-parent merge commits.
 
 ### Branch Information (git branch/checkout/etc.)
 

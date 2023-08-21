@@ -44,14 +44,17 @@ copy_git_completion() {
 
 log()  { git log "$@"; }
 
-logbr() {   # XXX FIXME
-    local -a argv=("$@")
-    local branchref=@
-    if [[ ${#argv[@]} -gt 0 ]] && [[ ${argv[-1]} != -* ]]; then
-        local branchref="${argv[-1]}"
-        unset 'argv[-1]'
-    fi
-    logs "${argv[@]}" $(mbase "$branchref").."$branchref"
+logs() {        # full paths of changed files
+    git log --stat=999 --stat-graph-width=5 "$@"
+}
+
+logp() {        # log with patches
+                # changed paths are truncated in stat, full in diff
+    git log --stat -p "$@"
+}
+
+logp1() {       # most recent patch
+    logp -1 "$@"
 }
 
 logb() {        # brief graph of current or specified branches
@@ -92,18 +95,16 @@ logmn() {       # logm without merges
     logm --no-merges "$@"
 }
 
-logs() {        # full paths of changed files
-    git log --stat=999 --stat-graph-width=5 "$@"
+logbr() {   # XXX FIXME
+    local -a argv=("$@")
+    local branchref=@
+    if [[ ${#argv[@]} -gt 0 ]] && [[ ${argv[-1]} != -* ]]; then
+        local branchref="${argv[-1]}"
+        unset 'argv[-1]'
+    fi
+    logs "${argv[@]}" $(mbase "$branchref").."$branchref"
 }
 
-logp() {        # log with patches
-                # changed paths are truncated in stat, full in diff
-    git log --stat -p "$@"
-}
-
-logp1() {       # most recent patch
-    logp -1 "$@"
-}
 
 for f in log logbr logb logab logh logm logmn logs logp logp1; do
     copy_git_completion $f git log
