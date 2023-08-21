@@ -96,14 +96,18 @@ prettier output.
 
 - `logmn`: As `logm` without single-parent merge commits.
 
-### Branch Information (git branch/checkout/etc.)
+### Ref (Branch) Information (git branch/checkout/etc.)
 
-- `br`: Display branch information. An additional `-g` option is added
-   that takes a `grep` pattern to display only matching refs.
+- `br`: As `git branch`.
 
-- `bra`: As `br` with `--all` to display all branches.
-
-- `brag`: As `bra -g`.
+- `glr`, `glra`: List refs, as `git branch -l`. This automatically uses the
+  most verbose format (giving short commit ID, tracking branch and
+  ahead/behind status, and a bit of the most recent commit summary
+  message). Output is sent through `less` by default limiting the line
+  length to the terminal width; you may add `-n` to avoid less quitting
+  immediately at EOF so you can scroll horizontally or turn on line wrap by
+  typing `-S`. `glra` is just `glr -a`. (This is named to avoid conflicts
+  with the `lr` file listing program.)
 
 - `co`: As `git checkout`
 

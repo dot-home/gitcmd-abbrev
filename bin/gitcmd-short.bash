@@ -192,26 +192,45 @@ gpack()     {
 ############################################################
 # git branch
 
+#   List local refs matching the optional pattern(s) anywhere in the ref
+#   name. This always lists in -v -v mode (giving short commit ID, tracking
+#   branch and ahead/behind status) and truncates lines to the terminal
+#   width. You may give it the -n option to have less not exit immediately
+#   at EOF if you need to scroll left/right to see more of the output.
+#
+#   TODO: look into using `git branch --format` or maybe even `git
+#   for-each-ref` to improve formatting, add multi-line output, or
+#   whatever.
+glr() {
+    #   (This is named to avoid conflicts with the 'lr' file listing program.)
+    local -a args=("$@") skipnext=false eofquit=-E
+    for i in $(seq 0 $((${#args[@]}-1))); do
+        #echo "$i:" $skipnext \'${args[$i]}\'
+        $skipnext && { skipnext=false; continue; }
+        case "${args[$i]}" in
+            -n)             args[$i]="-l"; eofquit=-e;;
+            --contains)     skipnext=true;;
+            --no-contains)  skipnext=true;;
+            --merged)       skipnext=true;;
+            --no-merged)    skipnext=true;;
+            --points-at)    skipnext=true;;
+            --sort)         skipnext=true;;
+            --format)       skipnext=true;;
+            -t|-u)          skipnext=true;;
+            [^-]*)          args[$i]="*${args[$i]}*"
+        esac
+    done
+    git branch -l -v -v --color "${args[@]}" | less $eofquit -R -S -J -X
+}; copy_git_completion glr git branch
+
+#   As glr() but for all (local and remote) refs.
+glra() { glr -a "$@"; }
+copy_git_completion glra git branch
+
 #   XXX TODO: This should always show the tracking branch and unpushed
 #   commits (à la `git branch -vv`), and should probably be rewritten
-#   to use `git for-each-ref`, or maybe just `git branch --format`.)
-br() {
-    local bropts grep_args=()
-    while :; do case "$1" in
-        -a) shift; bropts="-a -v";;
-        -v) shift; bropts="-v";;
-        -g) shift; grep_args+=("$1"); shift;;
-        *)  break;;
-    esac; done
-    # Using '.' as the default grep argument will remove blank lines.
-    # We can live with this here, since we expect none.
-    git branch --color $bropts "$@" \
-        | grep "${grep_args[@]:-.}" \
-        | less -E -R -S -J -X
-}; copy_git_completion br git branch
-bra()           { br -a "$@"; };    copy_git_completion bra git branch
-brag()          { br -a -g "$@"; }; copy_git_completion brag git branch
-brv()           { br -v "$@"; };    copy_git_completion brv git branch
+br() { git branch "$@"; }
+copy_git_completion br git branch
 
 #   XXX FIXME: This is quite broken? It definitely doesn't handle repos
 #   with `main` instead `master` as the main branch.
