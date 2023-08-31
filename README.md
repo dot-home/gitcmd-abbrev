@@ -27,7 +27,7 @@ following:
 - Add links to those files in an existing directory in your $PATH.
 - Copy the files to an existing directory in your $PATH.
 
-Then add `source gitcmd-short.bash` to your `~/.bashrc`.
+Then add `source gitcmd-abbrev.bash` to your `~/.bashrc`.
 
 ### dot-home Use
 
