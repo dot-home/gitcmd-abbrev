@@ -201,7 +201,7 @@ gpack()     {
 #   TODO: look into using `git branch --format` or maybe even `git
 #   for-each-ref` to improve formatting, add multi-line output, or
 #   whatever.
-glr() {
+lr() {
     #   (This is named to avoid conflicts with the 'lr' file listing program.)
     local -a args=("$@") skipnext=false eofquit=-E
     for i in $(seq 0 $((${#args[@]}-1))); do
@@ -221,11 +221,11 @@ glr() {
         esac
     done
     git branch -l -v -v --color "${args[@]}" | less $eofquit -R -S -J -X
-}; copy_git_completion glr git branch
+}; copy_git_completion lr git branch
 
-#   As glr() but for all (local and remote) refs.
-glra() { glr -a "$@"; }
-copy_git_completion glra git branch
+#   As lr() but for all (local and remote) refs.
+lrh() { lr -a "$@"; }
+copy_git_completion lrh git branch
 
 #   XXX TODO: This should always show the tracking branch and unpushed
 #   commits (à la `git branch -vv`), and should probably be rewritten

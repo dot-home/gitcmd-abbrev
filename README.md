@@ -100,14 +100,25 @@ prettier output.
 
 - `br`: As `git branch`.
 
-- `glr`, `glra`: List refs, as `git branch -l`. This automatically uses the
-  most verbose format (giving short commit ID, tracking branch and
-  ahead/behind status, and a bit of the most recent commit summary
-  message). Output is sent through `less` by default limiting the line
-  length to the terminal width; you may add `-n` to avoid less quitting
-  immediately at EOF so you can scroll horizontally or turn on line wrap by
-  typing `-S`. `glra` is just `glr -a`. (This is named to avoid conflicts
-  with the `lr` file listing program.)
+- `lr`, `lrh`, `lra`: List refs, as `git branch -l`. `lr` lists local heads
+  only, `lrh` lists all heads (local and remote), and `lra` lists all refs,
+  even those that are not heads (i.e., unknown to `git branch`). As well as
+  some standard git-branch arguments, these also accept a list of string
+  fragments that will limit the output to refs matching any of them. (E.g.,
+  you might use `lra dev/cjs/` to see only development branches made by
+  user `cjs`.)
+
+  This automatically uses the most verbose format (giving short commit ID,
+  tracking branch and ahead/behind status, and a bit of the most recent
+  commit summary message). Output is sent through `less` by default
+  limiting the line length to the terminal width; you may add `-n` to avoid
+  less quitting immediately at EOF so you can scroll horizontally or turn
+  on line wrap by typing `-S`.
+
+  This name conflicts with the with the `lr` file listing program. This is
+  not normally an issue in script files, since they will not inherit this
+  function, but if you need to get around it locally, consider adding
+  an `lrr` function that calls `/usr/bin/lr`.
 
 - `co`: As `git checkout`
 
