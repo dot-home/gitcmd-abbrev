@@ -37,6 +37,11 @@ Then add `source gitcmd-abbrev.bash` to your `~/.bashrc`.
     git clone https://github.com/dot-home/git-tools.git     # This repo
     ~/.home/_dot-home/bin/dot-home-setup
 
+### Other Notes
+
+The `gitcmd-abbrev.bash` file is not named `git-abbrev` to make it clear
+that this is not a git sub-command.
+
 
 Commands
 --------
@@ -129,61 +134,83 @@ prettier output.
 
 See also above `logp`, `logp1`, `slp1`.
 
-- `blame`
-- `dif`
-- `difs`
-- `dift`
+- `blame`: As `git blame`.
+- `dif`: As `git diff`.
+- `difs`: Diff staged files, as `dif --cached`.
+- `dift`: As `git difftool -y`
 
 ### Resetting the Work Tree (git reset/clean)
 
-- `gre`
-- `grehard`
-- `greupstream`
-- `clean`
-- `iclean`
-- `stash`
+- `gre`: As `git reset`.
+- `grehard`: As `git reset --hard`.
+- `greupstream`: As `git reset --hard @{upstream}`
+- `clean`: With no arguments, as `git clean --dry-run`. Supplying `-f` will
+  suppress the `-n`/`--dry-run` argument.
+- `iclean`: Clean ignored files and directories too, as `clean -dX`.
+- `stash`: With no arguments, lists stash entries.
+  With any arguments, as `git stash`.
 
 ### Creating Commits (git add/commit/submodule)
 
-- `add`
-- `com`
-- `coma`
-- `cam`
-- `gsub`
+- `add`: As `git add`.
+- `com`: As `git commit -v`.
+- `coma`: As `com --all`
+- `cam`: As `com --amend`
+- `gsub`: As `git submodule`.
 
 ### Rebasing (git rebase)
 
-- `gr`
-- `grmu`
-- `grabort`
-- `grcontinue`
-- `grskip`
+- `gr`: As `git rebase`
+- `grmu`: As `git rebase … master@{upstream}`. (XXX this needs to be fixed
+  to use the default head, so it works with `main` as well.)
+- `grabort`: As `git rebase --abort`.
+- `grcontinue`: As `git rebase --continue`.
+- `grskip`: As `git rebase --skip`.
 - `gri`
 - `grwhere`
-- `cpick`
+- `cpick`: As `git cherry-pick`.
 
 - `mergeff`: As `git merge --ff-only`.
 
 ### Remote Operations (git remote/fetch/push/pull)
 
-- `gurl`
-- `rem`
+- `gurl [REPO-DIR …]`: Show fetch URLs for the repo(s) at or above
+  _REPO-DIR,_ (default: current working directory), one per line.
+- `rem`:
+  - With no arguments, display a line for each remote giving the name and
+    fetch URL. If the push URL is different, a second line with the name
+    and the push URL will be displayed.
+  - With arguments, as `git remote`.
 - `fetch`
-- `pull`
-- `push`
-- `pushf`
-- `pushu`
+  - With no arguments, fetch from `remotes.default` or, if that's not set,
+    all remotes. Then show the current status of the working copy (as `git
+    status -bs`).
+  - With arguments, as `git remote`.
+- `pull`: As `git pull --ff-only`. (This keeps you from accidentally
+  getting stuck in a complicated merge.)
+- `push`: As `git push`, but does not accept the `-f`/`--force` options.
+- `pushf`: As `git push --force-with-lease`. This also does not accept the
+  `-f`/`--force` options; to do that (which is quite dangerous) use `git
+  push`.
+- `pushu REMOTE [REF]`: Push the ref _REF_ (default: the current branch) to
+  _REMOTE_ (using the same ref name on _REMOTE_) and set _REF_ to track the
+  remote ref. This will do an `--unset-upstream` if necessary before doing
+  the `--set-upstream`.
 
 ### Misc.
 
-- `ggrep`
-- `gfgrep`
-- `gk`
+- `ggrep`: As `git grep`.
+- `gfgrep`: As `ggrep -F` (i.e., without interpreting the pattern as a
+  regex).
+- `gk [START-COMMITISH]`: Runs `gitk --all`, with the commit at
+  _START-COMMITISH_ selected if supplied.
 
 ### Repository Maintenance
 
-- `gpack`
-
+- `gpack`: Do a garbage collection (`git gc`) and then pack the repo down
+  to the minimum number of files, removing all loose object files and
+  similar. Any arguments are passed on to `git gc` so you may use, e.g.,
+  `--aggressive` to collect down to a smaller size before the pack.
 
 
 Other Tools
