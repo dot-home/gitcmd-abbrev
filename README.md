@@ -1,9 +1,9 @@
-git-tools - Convenient Abbreviated Git CLI Commands
+gitcmd-abbrev - Convenient Abbreviated Git CLI Commands
 ===================================================
 
-This provides a small set of Bash¹ functions and commands that greatly
-shorten the amount of typing you have to do for common Git operations (even
-if you already use command-line completion). For example:
+gitcmd-abbrev¹ provides a small set of Bash² functions and commands that
+greatly shorten the amount of typing you have to do for common Git
+operations (even if you already use command-line completion). For example:
 
     com     # git commit -v
     cam     # git commit -v --amend
@@ -12,8 +12,10 @@ if you already use command-line completion). For example:
 The same command-line completions are available as for the long Git
 commands.
 
-¹ Bash is required; this uses Bash features that do not exist in POSIX
-shells.
+¹ This is not named `git-abbrev` because that is the name that would be
+used for the script supporting a `git abbrev` subcommand.
+
+² Bash is required; this uses Bash features that do not exist in POSIX shells.
 
 
 Installation
@@ -23,7 +25,7 @@ Installation
 
 Ensure the files under `bin/` are in your $PATH, e.g. by doing one of the
 following:
-- Add `…/git-tools/bin/` to your $PATH.
+- Add `…/gitcmd-abbrev/bin/` to your $PATH.
 - Add links to those files in an existing directory in your $PATH.
 - Copy the files to an existing directory in your $PATH.
 
@@ -34,13 +36,8 @@ Then add `source gitcmd-abbrev.bash` to your `~/.bashrc`.
     mkdir -p ~/.home
     cd ~/.home
     git clone https://github.com/dot-home/_dot-home.git     # Core system
-    git clone https://github.com/dot-home/git-tools.git     # This repo
+    git clone https://github.com/dot-home/gitcmd-abbrev.git # This repo
     ~/.home/_dot-home/bin/dot-home-setup
-
-### Other Notes
-
-The `gitcmd-abbrev.bash` file is not named `git-abbrev` to make it clear
-that this is not a git sub-command.
 
 
 Commands
