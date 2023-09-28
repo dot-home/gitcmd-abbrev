@@ -59,7 +59,7 @@ logp1() {       # most recent patch
 
 logb() {        # brief graph of current or specified branches
     # Use `-S` in less to switch to wrapped lines instead of sideways scrolling
-    LESS="$LESS -SR" \
+    LESS="$LESS -SR -X" \
     git log --graph --abbrev-commit --pretty=oneline --decorate=short "$@"
 }
 
@@ -76,7 +76,7 @@ logh() {        # the "head" of the repo
     #   and limiting the number shown could probably be improved. In
     #   particular, it would be nice to show a bit of HEAD no matter how
     #   old it is.
-    LESS="$LESS -E" logab --since '1 week ago' -n 30 "$@";
+    LESS="$LESS -E -X" logab --since '1 week ago' -n 30 "$@";
 }
 
 logm() {        # brief graph with commit metadata
