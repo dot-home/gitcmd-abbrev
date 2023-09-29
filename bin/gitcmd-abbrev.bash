@@ -152,6 +152,7 @@ coma()      {
             }; copy_git_completion coma git commit
 cam()       { com --amend "$@"; }; copy_git_completion cam git commit
 cpick()     { git cherry-pick "$@"; }; copy_git_completion cpick git cherry-pick
+cpcontinue() { cpick --continue "$@"; }; copy_git_completion cpcontinue git cherry-pick
 
 #   `git clean` with `-n` supplied for you unless you specify `-f`
 clean()     {

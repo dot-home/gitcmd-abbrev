@@ -166,6 +166,7 @@ See also above `logp`, `logp1`, `slp1`.
 - `gri`
 - `grwhere`
 - `cpick`: As `git cherry-pick`.
+- `cpcontinue`: As `cpcick --continue`.
 
 - `mergeff`: As `git merge --ff-only`.
 
