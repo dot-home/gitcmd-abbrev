@@ -1,0 +1,8 @@
+#   Nobody ever uses HTTP authentication to GitHub or GitLab, so automatically
+#   switch to SSH for both of these if we've pulled from a public URL.
+
+[url "git@github.com.:"]
+    pushInsteadOf = https://github.com/
+
+[url "git@gitlab.com.:"]
+    pushInsteadOf = https://gitlab.com/
