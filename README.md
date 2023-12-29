@@ -98,6 +98,12 @@ prettier output.
 
 - `logmn`: As `logm` without single-parent merge commits.
 
+### Other Commit Information Display (git shortlog)
+
+- `gauthors`: Show all authors and their commit counts for the commit range
+  given (default `@`, i.e., all commits from HEAD back to the first
+  commit).
+
 ### Ref (Branch) Information (git branch/checkout/etc.)
 
 - `br`: As `git branch`.

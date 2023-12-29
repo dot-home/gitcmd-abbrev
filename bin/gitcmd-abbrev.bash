@@ -105,10 +105,16 @@ logbr() {   # XXX FIXME
     logs "${argv[@]}" $(mbase "$branchref").."$branchref"
 }
 
-
 for f in log logbr logb logab logh logm logmn logs logp logp1; do
     copy_git_completion $f git log
 done
+
+############################################################
+# git shortlog functions
+
+gauthors() {      # list authors and their commit counts
+    git shortlog -e -sn "$@"
+}; copy_git_completion gauthors git shortlog
 
 ############################################################
 # git diff, other repo search/browse/etc. functions
