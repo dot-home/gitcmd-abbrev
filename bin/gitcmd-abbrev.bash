@@ -342,15 +342,44 @@ rem()   {
 }; copy_git_completion rem git remote
 
 #   Given no args, fetch from remotes.default or, if not set, all remotes.
-#   Otherwise fetch from all listed remotes/`remotes.<group>` entries.
+#
+#   Otherwise, args may be of two forms for different functionality:
+#   • If any argument is a path to a directory containing a .git/ subdir,
+#     we assume that all args are paths. For those that are Git repos,
+#     we recursively run fetch() on them. For those that are not, we
+#     inform the user that we're ignoring them.
+#   • Otherwise we're fetching the repo for the current working directory,
+#     and we run `git fetch` with the arguments given.
+#
 #   This massages the output of `git fetch` to be significantly more quiet.
 #
 fetch() {
-    local allarg='--all'
+    local allarg='--all' fetchcwd=true
     for arg in "$@"; do
-        # Disable --all if remote specified (arg without leading `-`)
+        # Disable --all if remote or dir specified (arg without leading `-`)
         [[ ${arg#-} == $arg ]] && allarg=''
     done
+
+    for arg in "$@"; do
+        # If any arg is a directory with a .git/ dir under it, the repo is
+        # not that of the current working directory, but a list of paths
+        # to repos to fetch.
+        [[ -d "$arg/.git" ]] && fetchcwd=false
+    done
+    if ! $fetchcwd; then    # multi-repo fetch
+        for path in "$@"; do
+            if [[ -d "$path/.git/" ]]; then
+                echo "===== Fetching $path"
+                (cd "$path" && fetch)
+            else
+                echo "===== Ignoring $path"
+            fi
+        done
+        return 0
+    fi
+
+    #   Single-repo fetch
+    #
     ( set -o pipefail   # in subshell only, so we don't affect user's value
       #     git-fetch does not produce the annoying 'remote: ...' and
       #     'Unpacking objects: ...' lines when stderr is not a terminal,

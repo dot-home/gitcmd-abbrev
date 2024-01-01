@@ -189,7 +189,11 @@ See also above `logp`, `logp1`, `slp1`.
   - With no arguments, fetch from `remotes.default` or, if that's not set,
     all remotes. Then show the current status of the working copy (as `git
     status -bs`).
-  - With arguments, as `git remote`.
+  - With any argument that's a path to a directory containing a .git/
+    subdirectory, assume all args are paths to repos to be fetched as
+    above or paths to be ignored. The user is informed for each one
+    whether it's being feched or ignored.
+  - With arguments, as `git fetch`.
 - `pull`: As `git pull --ff-only`. (This keeps you from accidentally
   getting stuck in a complicated merge.)
 - `push`: As `git push`, but does not accept the `-f`/`--force` options.
