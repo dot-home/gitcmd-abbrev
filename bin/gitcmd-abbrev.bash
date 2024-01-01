@@ -341,20 +341,41 @@ rem()   {
     fi
 }; copy_git_completion rem git remote
 
-# Given no args, fetch from remotes.default or, if not set, all remotes.
-# Otherwise fetch from all listed remotes/`remotes.<group>` entries.
-#
-# I'd like to turn off the noise of fetch-pack (and unpack-objects)
-# but --quiet here also turns off the names of the remotes being fetched
-# and the status lines showing changed refs.
+#   Given no args, fetch from remotes.default or, if not set, all remotes.
+#   Otherwise fetch from all listed remotes/`remotes.<group>` entries.
+#   This massages the output of `git fetch` to be significantly more quiet.
 #
 fetch() {
     local allarg='--all'
     for arg in "$@"; do
-        # Disable --all if repo specified (arg without leading `-`)
+        # Disable --all if remote specified (arg without leading `-`)
         [[ ${arg#-} == $arg ]] && allarg=''
     done
-    git fetch $allarg "$@" || return
+    ( set -o pipefail   # in subshell only, so we don't affect user's value
+      #     git-fetch does not produce the annoying 'remote: ...' and
+      #     'Unpacking objects: ...' lines when stderr is not a terminal,
+      #     so we need only join the 'Fetching <remote-name>' to a following
+      #     'From <remote-URL>' line, if the latter is present.
+      git fetch $allarg "$@" 2>&1 \
+        | tr '\n' '\0' | sed -e '
+           #p;d     # debug: ignore all code below and show original input
+
+            #   WARNING: This must be tested with both multiple remotes in
+            #   one fetch (a group or --all), which produces "From
+            #   <remote>" lines, and a single remote, which does not.
+            #   Currently the latter produces the "From" line as the first
+            #   line, so with no leading newline/NUL the join below will
+            #   not take effect.
+
+            #   `tr` has changed all the newlines to NULs, so that we can
+            #   detect "Fetching ...", "From ..." pairs. (This cannot be
+            #   handled in regular line-mode sed because it cannot deal
+            #   with possible "Fetching...", "Fetching..." pairs.)
+
+            s/\x00From / from /g            # "\nFrom" always joins w/prev line
+            s/\x00/\n/g                     # restore all original newlines
+            '
+    ) || return
     git status -bs
 }; copy_git_completion fetch git fetch
 
