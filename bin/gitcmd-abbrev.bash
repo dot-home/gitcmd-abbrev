@@ -172,8 +172,8 @@ clean()     {
 #   Clean explicitly ignored files and directories
 iclean()    { clean -dX "$@"; }; copy_git_completion iclean git clean
 
-gsub()      { git submodule "$@"; }
-copy_git_completion gsub git submodule
+gsm()       { git submodule "$@"; }
+copy_git_completion gsm git submodule
 
 gpack()     {
     #   Pack down a repo to the minimun number of files. This is useful
