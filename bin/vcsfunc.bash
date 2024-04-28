@@ -54,12 +54,10 @@ vcs_root() {
 }
 
 vcs_git_submodules() {
-    #   Print the git submodule paths (if any) under "$1", which must be
-    #   the root of a repo working copy. Successfully returns nothing
-    #   if there are no submodules.
-    #   XXX This does not handle paths with spaces in them, This should
-    #   really handle that (perhaps using arrays), but that turns out to
-    #   to be extremely difficult.
+    #   Given a git repo working copy root "$1", print its git submodule
+    #   paths, one per line. (This will print nothing if there are no
+    #   submodules, and still exit with success.)
+    #   The output is intended to be read with `while read path; do ...`.
 
     [[ -z ${1:-} ]] && { echo 1>&2 INTERNAL ERROR; exit 9; }
 

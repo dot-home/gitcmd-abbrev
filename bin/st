@@ -68,9 +68,9 @@ status_git() {
     fi
 
     $vcs status -s $gitopts "$@"
-    for s in $(vcs_git_submodules "$this_root"); do
-        (cd "$s" && echo -n "$s: " && st)
-    done
+    while read s; do
+        (cd "$s" && echo -n ">> $s " && st)
+    done < <(vcs_git_submodules "$this_root")
 }
 
 ############################################################
