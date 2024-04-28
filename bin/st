@@ -2,6 +2,9 @@
 #
 #  st - show status of one or more VCS checkouts or files in checkouts.
 #
+#  With no arguments, this shows the status of the checkout in which the
+#  current working directory resides.
+#
 #  This command takes a list of paths, which is assumed to be "." if
 #  empty. If all paths given are within the same checkout or repository
 #  that the current working directory is in, a long-form VCs status
@@ -52,6 +55,16 @@ status_summaries() {
 }
 
 ############################################################
+
+status_git() {
+    if git status -h 2>&1 | grep >/dev/null 2>&1 -- '--branch'
+        then gitopts="-b"  # appeared after 1.7.0, but by 1.7.9.
+        else git branch -vv | grep -F '*' | sed -e 's/^. //' \
+             -e 's/].*//' -e 's/ .*\[/.../' -e 's/^/## /'; fi
+    $vcs status -s $gitopts "$@"
+}
+
+############################################################
 # Main
 
 this_root=$(vcs_root .)
@@ -69,11 +82,7 @@ else
     case $vcs in
         '')     echo 1>&2 "No VCS for ."; exit 1 ;;
         cvs)    cvs -n update "$@" ;;
-        git)    if git status -h 2>&1 | grep >/dev/null 2>&1 -- '--branch'
-                    then gitopts="-b"  # appeared after 1.7.0, but by 1.7.9.
-                    else git branch -vv | grep -F '*' | sed -e 's/^. //' \
-                         -e 's/].*//' -e 's/ .*\[/.../' -e 's/^/## /'; fi
-                $vcs status -s $gitopts "$@" ;;
+        git)    status_git;;
         *)      $vcs status "$@" ;;
     esac
 fi
