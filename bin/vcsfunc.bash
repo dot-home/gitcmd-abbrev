@@ -53,3 +53,18 @@ vcs_root() {
     esac
 }
 
+vcs_git_submodules() {
+    #   Print the git submodule paths (if any) under "$1", which must be
+    #   the root of a repo working copy. Successfully returns nothing
+    #   if there are no submodules.
+    #   XXX This does not handle paths with spaces in them, This should
+    #   really handle that (perhaps using arrays), but that turns out to
+    #   to be extremely difficult.
+
+    [[ -z ${1:-} ]] && { echo 1>&2 INTERNAL ERROR; exit 9; }
+
+    [[ -r $1/.gitmodules ]] || return 0     # prints nothing
+
+    git config -f "$1"/.gitmodules -l \
+        | sed -n -e 's/^submodule\.//' -e 's/.*\.path=//p'
+}
