@@ -57,10 +57,14 @@ status_summaries() {
 ############################################################
 
 status_git() {
-    if git status -h 2>&1 | grep >/dev/null 2>&1 -- '--branch'
-        then gitopts="-b"  # appeared after 1.7.0, but by 1.7.9.
-        else git branch -vv | grep -F '*' | sed -e 's/^. //' \
-             -e 's/].*//' -e 's/ .*\[/.../' -e 's/^/## /'; fi
+    #   Without `--branch` support on `git status` we must do it ourselves.
+    if git status -h 2>&1 | grep >/dev/null 2>&1 -- '--branch'; then
+        gitopts="-b"  # appeared after 1.7.0, but by 1.7.9.
+    else
+        git branch -vv | grep -F '*' | sed -e 's/^. //' \
+             -e 's/].*//' -e 's/ .*\[/.../' -e 's/^/## /'
+    fi
+
     $vcs status -s $gitopts "$@"
 }
 
