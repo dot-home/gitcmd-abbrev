@@ -69,7 +69,7 @@ status_git() {
 
     $vcs status -s $gitopts "$@"
     while read s; do
-        (cd "$s" && echo -n "__ $s " && st)
+        (cd "$this_root/$s" && echo -n "__ $s " && st)
     done < <(vcs_git_submodules "$this_root")
 }
 
