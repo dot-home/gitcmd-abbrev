@@ -54,11 +54,10 @@ vcs_root() {
 }
 
 vcs_git_submodules() {
-    #   Given a git repo working copy root "$1", print its git submodule
-    #   paths, one per line. (This will print nothing if there are no
-    #   submodules, and still exit with success.)
+    #   Given a git repo working copy root "$1", print its git submodule paths
+    #   relative to the root of the repo, one per line. (This will print
+    #   nothing if there are no submodules, and still exit with success.)
     #   The output is intended to be read with `while read path; do ...`.
-
     [[ -z ${1:-} ]] && { echo 1>&2 INTERNAL ERROR; exit 9; }
 
     [[ -r $1/.gitmodules ]] || return 0     # prints nothing
