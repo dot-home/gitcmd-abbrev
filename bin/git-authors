@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+#   git-authors - display all commit authors in a log, with commit counts
+#
+#   This uses `git log`, so the counts will be displayed for all commits up
+#   to the current HEAD. However, it passes any parameters you give on to
+#   `git log` so you can count any arbitrary selection of commits (e.g.,
+#   `git-authors origin/main`). This of course also allows you to add
+#   options that don't display the Author: line, such as --oneline, which
+#   will result in no output.
+#
+#   The output is displayed in descending order of commit count; you can
+#   pipe it into `sort -k 2` to sort by author name.
+#
+set -Eeuo pipefail
+
+git log "$@" \
+    | sed -n -e 's,^[ |/\\]*Author: ,,p  # work with --graph, too' \
+    | sort | uniq -c | sort -nr
