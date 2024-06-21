@@ -3,10 +3,12 @@
 #  st - show status of one or more VCS checkouts or files in checkouts.
 #
 #  With no arguments, this shows the status of the checkout in which the
-#  current working directory resides.
+#  current working directory resides. A `-b` option may be given to
+#  show a brief status (current repo only); without this the status of
+#  all submodules will also be shown recursively.
 #
-#  This command takes a list of paths, which is assumed to be "." if
-#  empty. If all paths given are within the same checkout or repository
+#  Otherwise this command takes a list of paths, which is assumed to be "."
+#  if empty. If all paths given are within the same checkout or repository
 #  that the current working directory is in, a long-form VCs status
 #  message will be printed for those paths. Otherwise, a short-form VCS
 #  status message will be printed for each path.
@@ -61,6 +63,7 @@ status_git() {
     #   Git <1.7.9 (or maybe as far back as 1.7.0) has no -b option
     #   on Git status; we no longer support such old versions.
     $vcs status -bs "$@"
+    $brief && return
     local s; while read s; do
         echo -n "__ $s "
         if [ -e $this_root/$s/.git ];
@@ -73,6 +76,14 @@ status_git() {
 ############################################################
 # Main
 
+#   Command-line Options
+brief=false
+for opt in "$@"; do case "$opt" in
+    -b)     shift; brief=true;;
+    *)      break;;
+esac; done
+
+#   Command-line Parameters
 this_root=$(vcs_root .)
 all_in_this_checkout=true
 for dir in "$@"; do
