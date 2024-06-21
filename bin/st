@@ -62,7 +62,11 @@ status_git() {
     #   on Git status; we no longer support such old versions.
     $vcs status -bs "$@"
     local s; while read s; do
-        (cd "$this_root/$s" && echo -n "__ $s " && st)
+        echo -n "__ $s "
+        if [ -e $this_root/$s/.git ];
+            then ( cd "$this_root/$s"; st; )
+            else echo MISSING
+        fi
     done < <(vcs_git_submodules "$this_root")
 }
 
