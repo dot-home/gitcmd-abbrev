@@ -11,6 +11,7 @@
 #  message will be printed for those paths. Otherwise, a short-form VCS
 #  status message will be printed for each path.
 #
+set -Eeuo pipefail
 
 . $(dirname $0)/vcsfunc.bash
 
@@ -48,7 +49,7 @@ status_summaries() {
         [[ _"$dir" == _-* ]] && continue
         printf "%*s " $path_len "$dir"
         [ -d "$dir" ] || { echo "      x"; continue; }
-        vcs=$(vcs_for_root "$dir")
+        vcs=$(vcs_for_root "$dir" || true)
         [ -z "$vcs" ] && { echo "      d"; continue; }
         printf "%s\n" "$(summarize_$vcs "$dir")" | cut -c -$((79-$path_len))
     done
