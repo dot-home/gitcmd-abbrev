@@ -57,18 +57,10 @@ status_summaries() {
 ############################################################
 
 status_git() {
-    local gitopts s
-
-    #   Without `--branch` support on `git status` we must do it ourselves.
-    if git status -h 2>&1 | grep >/dev/null 2>&1 -- '--branch'; then
-        gitopts="-b"  # appeared after 1.7.0, but by 1.7.9.
-    else
-        git branch -vv | grep -F '*' | sed -e 's/^. //' \
-             -e 's/].*//' -e 's/ .*\[/.../' -e 's/^/## /'
-    fi
-
-    $vcs status -s $gitopts "$@"
-    while read s; do
+    #   Git <1.7.9 (or maybe as far back as 1.7.0) has no -b option
+    #   on Git status; we no longer support such old versions.
+    $vcs status -bs "$@"
+    local s; while read s; do
         (cd "$this_root/$s" && echo -n "__ $s " && st)
     done < <(vcs_git_submodules "$this_root")
 }
