@@ -62,7 +62,6 @@ status_summaries() {
 status_git() {
     #   Git <1.7.9 (or maybe as far back as 1.7.0) has no -b option
     #   on Git status; we no longer support such old versions.
-    echo $vcs status -bs "$@"
     $vcs status -bs "$@"
     $brief && return
     local s; while read s; do
