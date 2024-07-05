@@ -172,8 +172,9 @@ clean()     {
 #   Clean explicitly ignored files and directories
 iclean()    { clean -dX "$@"; }; copy_git_completion iclean git clean
 
-gsm()       { git submodule "$@"; }
-copy_git_completion gsm git submodule
+#   This avoids conflicts with `gs` (Ghostscript) and `gm` (GraphicsMagick)
+sm()       { git submodule "$@"; }
+copy_git_completion sm git submodule
 
 gpack()     {
     #   Pack down a repo to the minimun number of files. This is useful
