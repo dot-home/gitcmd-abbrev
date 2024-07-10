@@ -42,6 +42,8 @@ copy_git_completion() {
 ############################################################
 # git log functions (completion setup at end)
 
+#   "Full" commit output (multiple lines per commit)
+
 log()  { git log "$@"; }
 
 logs() {        # full paths of changed files
@@ -56,6 +58,13 @@ logp() {        # log with patches
 logp1() {       # most recent patch
     logp -1 "$@"
 }
+
+slp1() {        # most recent patch with leading blank lines for readability
+    local i; for i in 1 2 3 4 5; do echo; done
+    logp1 "$@"
+}
+
+#   "Oneline" commit output (1-2 lines per commit)
 
 logb() {        # brief graph of current or specified branches
     # Use `-S` in less to switch to wrapped lines instead of sideways scrolling
@@ -105,7 +114,9 @@ logbr() {   # XXX FIXME
     logs "${argv[@]}" $(mbase "$branchref").."$branchref"
 }
 
-for f in log logbr logb logab logh logm logmn logs logp logp1; do
+#   Completion
+
+for f in log logs logp logp1 slp1 logb logab logh logm logmn logbr; do
     copy_git_completion $f git log
 done
 
@@ -120,11 +131,6 @@ gauthors() {      # list authors and their commit counts
 # git diff, other repo search/browse/etc. functions
 
 blame() { git blame "$@"; }; copy_git_completion blame git blame
-
-slp1() {        # most recent patch with leading blank lines for readability
-    local i; for i in 1 2 3 4 5; do echo; done
-    logp1 "$@"
-}; copy_git_completion slp1 git log
 
 dif()   { git diff "$@"; }; copy_git_completion dif git diff
 difs()  { dif --cached "$@"; }; copy_git_completion difs git diff
