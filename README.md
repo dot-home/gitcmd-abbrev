@@ -75,11 +75,15 @@ prettier output.
   widths are slightly tweaked to maximize the amount of the filename you
   see.
 
-- `logp`, `logp1`, `slp1`: As `logs` with the diff from the previous commit
-  (`--patch`) as well. `logp1` does this for a single commit, rather than
-  all commits down that branch of the graph. `slp1` does the same with a
-  few blank lines prefixed to clearly separate the commit from previous
-  output in the terminal. (This is useful mainly on tall terminal windows.)
+- `logp`, `logp1`, `slp1`, `logpr`:
+  As `logs` with the diff from the previous commit (`--patch`) as well.
+  `logp1` does this for a single commit, rather than all commits down that
+  branch of the graph. `slp1` does the same with a few blank lines prefixed
+  to clearly separate the commit from previous output in the terminal.
+  (This is useful mainly on tall terminal windows.) `logpr` prints
+  the commits in reverse order, which is useful for doing a "walk forward
+  through the commits" review of code. (To review a dev branch, for example,
+  you could use `logpr main@{u}..origin/dev/joe/bugfix`.
 
 - `logb`: Brief (one line per commit) graph of current or specified
   refs. The $LESS variable will have `-RS` appended to enable proper

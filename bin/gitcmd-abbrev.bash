@@ -55,6 +55,8 @@ logp() {        # log with patches
     git log --stat -p "$@"
 }
 
+logpr() { logp --reverse "$@"; }
+
 logp1() {       # most recent patch
     logp -1 "$@"
 }
