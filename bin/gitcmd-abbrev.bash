@@ -118,7 +118,7 @@ logbr() {   # XXX FIXME
 
 #   Completion
 
-for f in log logs logp logp1 slp1 logb logab logh logm logmn logbr; do
+for f in log logs logp logpr logp1 slp1 logb logab logh logm logmn logbr; do
     copy_git_completion $f git log
 done
 
