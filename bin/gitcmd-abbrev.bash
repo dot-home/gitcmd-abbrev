@@ -248,13 +248,12 @@ copy_git_completion lrh git branch
 br() { git branch "$@"; }
 copy_git_completion br git branch
 
-#   XXX FIXME: This is quite broken? It definitely doesn't handle repos
-#   with `main` instead `master` as the main branch.
+#   XXX FIXME: Not well tested (or documented).
 mbase() {
     local range_to=false
     [ _"$1" = _-t ] && { range_to=true; shift; }
     local here=${1:-HEAD}
-    local there=${2:-master@{upstream}}
+    local there=${2:-main@{upstream}}
 
     local base=$(git merge-base "$here" "$there")
     if $range_to; then
@@ -270,7 +269,7 @@ mbase() {
 mergeff()       { git merge --ff-only "$@"; }   # Should be `integrate`?
 
 gr()            { git rebase "$@"; }
-grmu()          { git rebase "$@" master@{upstream}; }
+grmu()          { git rebase "$@" main@{upstream}; }
 grabort()       { git rebase --abort "$@"; }
 grcontinue()    { git rebase --continue "$@"; }
 grskip()        { git rebase --skip "$@"; }
