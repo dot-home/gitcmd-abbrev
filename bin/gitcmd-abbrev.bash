@@ -279,7 +279,8 @@ gri()           {
         && git rebase -i "HEAD~$arg" \
         || git rebase -i "$arg^"
 }
-for f in gr grm grabort grcontinue grskip gri; do
+grim()          { git rebase -i "$(mbase)" "$@"; }
+for f in gr grm grabort grcontinue grskip gri grim; do
     copy_git_completion $f git rebase
 done
 

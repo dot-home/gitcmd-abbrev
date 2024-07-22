@@ -173,7 +173,11 @@ See also above `logp`, `logp1`, `slp1`.
 - `grabort`: As `git rebase --abort`.
 - `grcontinue`: As `git rebase --continue`.
 - `grskip`: As `git rebase --skip`.
-- `gri`
+- `gri`, `grim`: Do a `git rebase -i`. `gri` defaults to the last ten
+  commits; you may give it a number for a different number of commits, or
+  any ref and it will start at that ref. `grim` starts at the first commit
+  that diverges from `main@{upstream}` (i.e., your entire current
+  development branch.)
 - `grwhere`
 - `cpick`: As `git cherry-pick`.
 - `cpcontinue`: As `cpcick --continue`.
