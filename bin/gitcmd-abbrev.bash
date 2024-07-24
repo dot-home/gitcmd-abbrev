@@ -23,7 +23,7 @@ __git_tools_gitver_GE() {
     && source /mingw64/share/git/completion/git-completion.bash
 
 copy_git_completion() {
-    type -t __git_wrap__git_main >/dev/null || return 0
+    type __git_wrap__git_main >/dev/null || return 0
     local command="$1"; shift
     eval "
         function __copy_git_completion::$command {
