@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+#   This does some simple tests to confirm our Bash code parses without
+#   error on bash3 and zsh (both of which are used on MacOS).
+#
+#   To build a copy of bash3, see:
+#     https://github.com/0cjs/sedoc/tree/master/lang/bash
+#
+set -Eeuo pipefail
+trap 'exitcode=$?; echo 2>&1 "ERROR"; exit $exitcode' ERR
+
+PROJDIR=$(cd "$(dirname "$0")" && pwd -P)
+
+
+[[ $# -eq 0 ]] && set bash bash3 zsh
+for i in "$@"; do
+    echo "===== $i"
+    $i "$PROJDIR/bin/gitcmd-abbrev.bash"
+done
+
+echo OK; trap '' ERR
