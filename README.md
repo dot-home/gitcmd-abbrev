@@ -71,9 +71,12 @@ prettier output.
 
 - `log`: Same as `git log`.
 
-- `logs`: As `log` with the list of files changed in each commit. The stat
-  widths are slightly tweaked to maximize the amount of the filename you
-  see.
+- `logs`: As `log` with the list of files changed in each commit. This
+  always gives the full path for each file, even if this causes wrapping;
+  use `-S` in `less` if you want horizontal scrolling instead of wrapping.
+  It minimizes the the size of the histogram for adds/deletes (5 max)
+  because that provides minimal information anyway. It also shows a
+  specific indication on new and deleted ("gone") files.
 
 - `logp`, `logp1`, `slp1`, `logpr`:
   As `logs` with the diff from the previous commit (`--patch`) as well.
