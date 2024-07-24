@@ -47,7 +47,7 @@ copy_git_completion() {
 log()  { git log "$@"; }
 
 logs() {        # full paths of changed files
-    git log --stat=999 --stat-graph-width=5 "$@"
+    git log --compact-summary --stat=999 --stat-graph-width=5 "$@"
 }
 
 logp() {        # log with patches
