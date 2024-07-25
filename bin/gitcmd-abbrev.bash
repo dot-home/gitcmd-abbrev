@@ -44,15 +44,15 @@ copy_git_completion() {
 
 #   "Full" commit output (multiple lines per commit)
 
-log()  { git log "$@"; }
+log()  { git log --date=iso "$@"; }
 
 logs() {        # full paths of changed files
-    git log --compact-summary --stat=999 --stat-graph-width=5 "$@"
+    log --compact-summary --stat=999 --stat-graph-width=5 "$@"
 }
 
 logp() {        # log with patches
                 # changed paths are truncated in stat, full in diff
-    git log --stat -p "$@"
+    log --stat -p "$@"
 }
 
 logpr() { logp --reverse "$@"; }
@@ -71,7 +71,7 @@ slp1() {        # most recent patch with leading blank lines for readability
 logb() {        # brief graph of current or specified branches
     # Use `-S` in less to switch to wrapped lines instead of sideways scrolling
     LESS="$LESS -SR -X" \
-    git log --graph --abbrev-commit --pretty=oneline --decorate=short "$@"
+    log --graph --abbrev-commit --pretty=oneline --decorate=short "$@"
 }
 
 logab() {       # brief graph of all branches
