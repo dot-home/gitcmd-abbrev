@@ -40,6 +40,13 @@ copy_git_completion() {
 }
 
 ############################################################
+#   git status functions
+
+stb() {         # `st` script in brief mode (do not show status of submodules)
+    st -b "$@"
+}; copy_git_completion st git status
+
+############################################################
 # git log functions (completion setup at end)
 
 #   "Full" commit output (multiple lines per commit)
