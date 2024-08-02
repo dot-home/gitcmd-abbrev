@@ -13,6 +13,18 @@ __git_tools_gitver_GE() {
     return 0
 }
 
+__ifref() {
+    : ' Verify that all arguments name commits.
+        Return success (0) if they all do, or failure (1) if any do not.
+    '
+    local ref
+    for ref in "$@"; do
+        git rev-parse -q --verify "$ref^{commit}" >/dev/null \
+            || return 1
+    done
+    return 0
+}
+
 ############################################################
 # "Copy" git completion to our custom functions
 
@@ -78,6 +90,22 @@ logab() {       # brief graph of all branches
     local exclude_notes='--exclude=refs/notes/\*'
     __git_tools_gitver_GE 1.8 || exclude_notes=
     logb --all $exclude_notes "$@"
+}
+
+logd() {       # brief graph of this dev branch, related, and main
+    local refs=()
+    __ifref main && refs+=( main )
+    __ifref main && refs+=( main@{upstream} )
+    __ifref master && refs+=( master )
+    __ifref master && refs+=( master@{upstream} )
+    __ifref HEAD@{upstream} && refs+=( HEAD@{upstream} )
+    local devbr=$(git rev-parse --symbolic-full-name HEAD)
+    refs+=("$devbr")
+    local desc="${devbr##*/}"
+    #   XXX this fails on ref names with spaces in them
+    refs+=( $(git rev-parse --symbolic-full-name \
+        --branches="dev/*/$desc" --remotes="*/dev/*/$desc") )
+    logb "${refs[@]}" "$@"
 }
 
 logh() {        # the "head" of the repo

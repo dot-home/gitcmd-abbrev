@@ -96,6 +96,15 @@ prettier output.
 
 - `logab`: As `logb` but for all heads in the repo.
 
+- `logd`: As `logb`, but for the following refs:
+  - All of the following that exist:
+    `main`, `main@{upstream}`, `master`, `master@{upstream}`.
+  - The current HEAD and, if it has a tracking ref, its tracking ref.
+  - All local and remote tracking refs matching `dev/*/DESC` where `DESC`
+    is the last component of the current branch name. E.g., if you are on
+    `dev/cjs/24g31/new-feature`, it will match all other refs
+    `dev/*/new-feature` local and remote.
+
 - `logh`: Show "recent" (within a week) changes on all heads.
   (The implementation of this needs to be improved.)
 
