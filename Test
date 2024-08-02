@@ -3,8 +3,8 @@
 #   This does some simple tests to confirm our Bash code parses without
 #   error on bash3 and zsh (both of which are used on MacOS).
 #
-#   To build a copy of bash3, see:
-#     https://github.com/0cjs/sedoc/tree/master/lang/bash
+#   To build bash3, macsed, etc., use:
+#     https://github.com/0cjs/script-compat-utils.git
 #
 set -Eeuo pipefail
 trap 'exitcode=$?; echo 2>&1 "ERROR"; exit $exitcode' ERR
