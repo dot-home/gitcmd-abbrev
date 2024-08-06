@@ -17,6 +17,12 @@ used for the script supporting a `git abbrev` subcommand.
 
 ² Bash is required; this uses Bash features that do not exist in POSIX shells.
 
+Contents:
+- [Installation](#installation)
+- [Commands](#commands)
+- [Other Tools](#other-tools)
+
+
 
 Installation
 ------------
@@ -38,6 +44,12 @@ Then add `source gitcmd-abbrev.bash` to your `~/.bashrc`.
     git clone https://github.com/dot-home/_dot-home.git     # Core system
     git clone https://github.com/dot-home/gitcmd-abbrev.git # This repo
     ~/.home/_dot-home/bin/dot-home-setup
+
+### Testing
+
+Sadly, testing is mostly manual at the moment, with some assistance from
+the (admittedly crappy) `Test` script. That script also has notes on manual
+testing in the comments.
 
 
 Commands
