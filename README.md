@@ -79,6 +79,19 @@ prettier output.
   to by any any other head. (I.e., a head points to the tip of a branch,
   not the middle of a branch.)
 
+### Status Display
+
+- `st`: Similar to `git status -bs`, except:
+  - Within a Git repo it will recursively display status of submodules up
+    to a given level _n_ specified with the `-n` option (default `-1`).
+  - Outside of a Git repo, given arguments that are directories, will
+    display a brief status for each directory, including whether it's a
+    plain directory, a Git repo, etc., the number of changed and untracked
+    files, and the current branch and latest commit message summary.
+  - Within a CVS checkout it will display the status of that. It should be
+    extended to give basic information about other VCS checkouts as well.
+- `st0`, `st9`: Same as `st -0` and `st -999`, respectively.
+
 ### Commmit Graph Display (git log)
 
 - `log`: Same as `git log`.
