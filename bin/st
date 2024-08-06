@@ -3,9 +3,12 @@
 #  st - show status of one or more VCS checkouts or files in checkouts.
 #
 #  With no arguments, this shows the status of the checkout in which the
-#  current working directory resides. A `-b` option may be given to
-#  show a brief status (current repo only); without this the status of
-#  all submodules will also be shown recursively.
+#  current working directory resides and one level of submodules below it.
+#  (This is the same as giving the `-1` option.) Giving the `-0` option
+#  will not show any submodule status, and giving increasing `-n` options
+#  (where `n` is any integer up to three digits) will show status of that
+#  many levels of submodules. The depth of a submodule is indicated by the
+#  number of `__` character sequences prefixed to the submodule dir.
 #
 #  Otherwise this command takes a list of paths, which is assumed to be "."
 #  if empty. If all paths given are within the same checkout or repository
@@ -63,11 +66,18 @@ status_git() {
     #   Git <1.7.9 (or maybe as far back as 1.7.0) has no -b option
     #   on Git status; we no longer support such old versions.
     $vcs status -bs "$@"
-    $brief && return
-    local s; while read s; do
-        echo -n "__ $s "
+    [[ $submodule_depth -le 0 ]] && return
+
+    submodule_depth=$(($submodule_depth - 1))
+    current_depth=$(($current_depth + 1))
+    local s i; while read s; do
+        for i in $(seq 1 $current_depth); do
+            echo -n '__'
+        done
+        echo -n " $s "
         if [ -e $this_root/$s/.git ];
-            then ( cd "$this_root/$s"; st; )
+            then (  cd "$this_root/$s"; \
+                    "$0" "+$current_depth" "-$submodule_depth" "$@" )
             else echo MISSING
         fi
     done < <(vcs_git_submodules "$this_root")
@@ -77,9 +87,11 @@ status_git() {
 # Main
 
 #   Command-line Options
-brief=false
+submodule_depth=1
+current_depth=0
 for opt in "$@"; do case "$opt" in
-    -b)     shift; brief=true;;
+    -[0-9]|-[0-9][0-9]|-[0-9][0-9][0-9])    submodule_depth=${1#-}; shift;;
+    +[0-9]|+[0-9][0-9]|+[0-9][0-9][0-9])    current_depth=${1#-};   shift;;
     *)      break;;
 esac; done
 
