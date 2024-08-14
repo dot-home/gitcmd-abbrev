@@ -230,7 +230,7 @@ See also above `logp`, `logp1`, `slp1`.
     fetch URL. If the push URL is different, a second line with the name
     and the push URL will be displayed.
   - With arguments, as `git remote`.
-- `fetch`
+- `fetch`, `fetchp`
   - With no arguments, fetch from `remotes.default` or, if that's not set,
     all remotes. Then show the current status of the working copy (as `git
     status -bs`).
@@ -239,6 +239,7 @@ See also above `logp`, `logp1`, `slp1`.
     above or paths to be ignored. The user is informed for each one
     whether it's being feched or ignored.
   - With arguments, as `git fetch`.
+  - `fetchp` is `fetch --prune --prune-tags`
 - `pull`: As `git pull --ff-only`. (This keeps you from accidentally
   getting stuck in a complicated merge.)
 - `push`: As `git push`, but does not accept the `-f`/`--force` options.
