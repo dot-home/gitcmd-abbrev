@@ -451,8 +451,8 @@ fetch() {
     git status -bs
 }; copy_git_completion fetch git fetch
 
-fetchp() { fetch --prune --prune-tags "$@"; }
-copy_git_completion fetchp git fetch
+pfetch() { fetch --prune --prune-tags "$@"; }
+copy_git_completion pfetch git fetch
 
 pull()  { git pull --ff-only "$@"; }; copy_git_completion pull git pull
 
