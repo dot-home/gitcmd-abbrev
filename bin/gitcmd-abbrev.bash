@@ -44,10 +44,19 @@ __gitcmdabbrev_bdate() {
 # "Copy" git completion to our custom functions
 
 #   Ensure we have __git_wrap__git_main
-[ -f /usr/share/bash-completion/completions/git ] \
-    && source /usr/share/bash-completion/completions/git
-[ -f /mingw64/share/git/completion/git-completion.bash ] \
-    && source /mingw64/share/git/completion/git-completion.bash
+if [[ -n $ZSH_VERSION ]]; then
+    #   Damn Mac users and their refusal to use bash....
+    #   `autoload -Uz compinit && compinit` will set up completion for git,
+    #   but this does not give us a __git_wrap__git_main(), so someone who
+    #   knows how to do the equivalent of copy_git_completion() below for
+    #   zsh will have to fix this.
+    :
+else
+    [ -f /usr/share/bash-completion/completions/git ] \
+        && source /usr/share/bash-completion/completions/git
+    [ -f /mingw64/share/git/completion/git-completion.bash ] \
+        && source /mingw64/share/git/completion/git-completion.bash
+fi
 
 copy_git_completion() {
     type __git_wrap__git_main >/dev/null || return 0
