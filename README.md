@@ -171,6 +171,10 @@ prettier output.
 
 - `co`: As `git checkout`
 
+- `cond`: Checkout new development branch. Typicaly used as `cond foo` to
+  start a new branch `dev/user/date/foo` at `main@{upstream}`.
+  See `cond -h` and experiment with `cond -n` for full details.
+
 - `mbase`: Display the base whence the current branch diverged from `master`.
   (This needs considerable fixing.)
 

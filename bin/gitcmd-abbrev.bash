@@ -25,6 +25,21 @@ __ifref() {
     return 0
 }
 
+#   Very short date format for use in branch names:
+#   two-digit year, letter for the month, two-digit day.
+#   December is renamed from `l` to `m` because `l` looks to much like `1`.
+__gitcmdabbrev_bdate() {
+    local y=$(date +%y);
+    local m=$(date +%m);
+    local d=$(date +%d);
+    if [[ $m < 10 ]]; then
+        m=$(echo ${m#0} | tr 1-9 a-i);
+    else
+        m=$(echo ${m#1} | tr 0-2 jkm);
+    fi;
+    echo "$y$m$d"
+}
+
 ############################################################
 # "Copy" git completion to our custom functions
 
@@ -187,6 +202,44 @@ gk()            {
 
 co()        { git checkout "$@"; }; copy_git_completion co git checkout
 #complete -r co 2>/dev/null  # Perhaps not necessary given all options below?
+
+__gitcmdabbrev_cond_usage() {
+    echo 'Usage: cond [opts] branch-desc [start-ref]'
+    echo 'If `branch-desc` has a slash in it, it will be used as the entire branch name.'
+    echo '`start-ref` is 'main@{u}' if not supplied'
+    echo 'Options (defaults may be put in $GITCMD_ABBREV_COND_ARGS):'
+    echo '  -h        print this help'
+    echo "  -n        don't create branch, just print what this would do"
+    echo '  -u USER   set developer name in branch to USER'
+    echo '  -ds       short date format: YYmDD'
+    echo '  -di       ISO date format: YYYY-MM-DD'
+    echo '  -dn       no date in branch name'
+}
+cond() {
+    local dry_run= user=$(id -nru) date=$(__gitcmdabbrev_bdate) branchdesc \
+        start_ref='main@{u}' branchname
+    #   Avoid a 'set' command with no args, which prints all vars/funcs.
+    [[ -n ${GITCMD_ABBREV_COND_ARGS:-} ]] \
+        && set -- $GITCMD_ABBREV_COND_ARGS "$@"
+    while [[ $# -gt 0 ]]; do case "$1" in
+        -h)     __gitcmdabbrev_cond_usage; return 0;;
+        -n)     shift; dry_run=echo;;
+        -u)     shift; user="$1"; shift;;
+        -ds)    shift; date=$(__gitcmdabbrev_bdate);;
+        -di)    shift; date=$(date -I);;
+        -dn)    shift; date='';;
+        -*)     echo 1>&2 "cond: bad option '$1'"; return 1;;
+        *)      break;;
+    esac; done
+    [[ -n ${1:-} ]] \
+        && { branchdesc="$1"; shift; } \
+        || { echo 1>&2 'cond: branch-desc required; -h for help'; return 0; }
+    [[ -n ${1:-} ]] && { start_ref="$1"; shift; }
+    [[ $branchdesc = */* ]] \
+        && branchname="$branchdesc" \
+        || branchname="dev/$user/${date:+$date/}$branchdesc"
+    $dry_run co --no-track -b "$branchname" "$start_ref"
+}
 
 add()       { git add "$@"; }; copy_git_completion add git add
 
