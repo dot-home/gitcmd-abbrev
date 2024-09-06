@@ -2,7 +2,7 @@
 #   `source` this file in your ~/.bashrc.
 
 #   Is Git version on this host >= given version?
-__git_tools_gitver_GE() {
+__gitcmdabbrev_gitver_GE() {
     local vs=($(git --version | sed -e 's/git version //' -e 's/\./ /g'))
     local ws=($(echo "$@" | sed -e 's/\./ /g'))
     # For `-lt`, empty string is 0
@@ -94,7 +94,7 @@ logb() {        # brief graph of current or specified branches
 
 logab() {       # brief graph of all branches
     local exclude_notes='--exclude=refs/notes/\*'
-    __git_tools_gitver_GE 1.8 || exclude_notes=
+    __gitcmdabbrev_gitver_GE 1.8 || exclude_notes=
     logb --all $exclude_notes "$@"
 }
 
