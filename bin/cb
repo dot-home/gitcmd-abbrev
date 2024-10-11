@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+#   cb - checkout Git branch
+#
+set -Eeuo pipefail
+trap 'echo 1>&2 "INTERNAL ERROR: ec=$? line=$LINENO" \
+    "cmd=$BASH_COMMAND file=${BASH_SOURCE[0]}"' ERR
+
+usage() {
+    echo <<____
+Usage: $(basename "$0") [opts] [REFSTR …]
+• Without REFSTR, prints the five most recently checked-out branches.
+• If REFSTR is '-', checks out the previously checked-out branch.
+• Otherwise checks out the first branch it finds with all REFSTR … substring
+  in the branch name, searching first through the history in most recently
+  used order, then local branches in reverse alphabetical order, then
+  remote branches in reverse alphabetical order. (Generally you'll want
+  to use branch names that sort in date order.)
+____
+}
+
+false
