@@ -510,7 +510,8 @@ fetch() {
             s/\x00/\n/g                     # restore all original newlines
             '
     ) || return
-    git status -bs
+    #   `git status` cannot be used inside a bare repo.
+    [[ $(git rev-parse --is-inside-work-tree) == true ]] && git status -bs
 }; copy_git_completion fetch git fetch
 
 pfetch() { fetch --prune --prune-tags "$@"; }
