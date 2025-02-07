@@ -149,13 +149,15 @@ prettier output.
 
 - `br`: As `git branch`.
 
-- `lr`, `lrh`, `lra`: List refs, as `git branch -l`. `lr` lists local heads
-  only, `lrh` lists all heads (local and remote), and `lra` lists all refs,
-  even those that are not heads (i.e., unknown to `git branch`). As well as
-  some standard git-branch arguments, these also accept a list of string
+- `lr`, `lrg`, `lrh`, `lra`: List refs, as `git branch -l`. As well as some
+  standard git-branch arguments, these also accept a list of string
   fragments that will limit the output to refs matching any of them. (E.g.,
   you might use `lra dev/cjs/` to see only development branches made by
   user `cjs`.)
+  - `lr`: local heads only.
+  - `lrg` local heads whose upstream is "gone" (remember to `fetch -p` first)
+  - `lrh` all heads (local and remote),
+  - `lra` all refs, even if not a head (i.e., unknown to `git branch`).
 
   This automatically uses the most verbose format (giving short commit ID,
   tracking branch and ahead/behind status, and a bit of the most recent

@@ -335,6 +335,19 @@ lr() {
     git branch -l -v -v --color "${args[@]}" | less $eofquit -R -S -J -X
 }; copy_git_completion lr git branch
 
+#   List local refs with an upstream that is "gone," i.e., we have no
+#   remote tracking branch for that upstream branch, usually due to
+#   deletion by `fetch -p`.
+#   This is in a very plain format suitable for `git branch -D $(lrg)`
+lrg() {
+    local loc rem
+    for loc in $(git branch --format='%(refname:short)'); do
+        rem=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$loc")
+        [[ -n "$rem" ]] || continue
+        git show-ref --verify --quiet "refs/remotes/$rem" || echo "$loc"
+    done
+}
+
 #   As lr() but for all (local and remote) refs.
 lrh() { lr -a "$@"; }
 copy_git_completion lrh git branch
