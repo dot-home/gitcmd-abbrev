@@ -39,11 +39,15 @@ summarize_git() {
         stat="$blocal"
         [[ -n $btrack ]] && stat="$stat ← ${btrack%$blocal}"
 
+        #   Replacing '0' with '.' makes the non-zero items "pop out" better.
+        [[ $changed -eq 0 ]] && changed='.'
+        [[ $untracked -eq 0 ]] && untracked='.'
+
         if [[ $ahead -gt 0 || $behind -gt 0 ]]; then
-            printf "%2d/%2d g  [+%d/-%d] %s\n" \
+            printf "%2s/%2s g  [+%d/-%d] %s\n" \
                 "$changed" "$untracked" "$ahead" "$behind" "$stat"
         else
-            printf "%2d/%2d g  %s\n" \
+            printf "%2s/%2s g  %s\n" \
                 "$changed" "$untracked" "$stat"
         fi
     )
