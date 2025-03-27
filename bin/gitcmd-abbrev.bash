@@ -362,7 +362,7 @@ mbase() {
     local range_to=false
     [ _"$1" = _-t ] && { range_to=true; shift; }
     local here=${1:-HEAD}
-    local there=${2:-main@{upstream}}
+    local there=${2:-"main@{upstream}"}
 
     local base=$(git merge-base "$here" "$there")
     if $range_to; then
