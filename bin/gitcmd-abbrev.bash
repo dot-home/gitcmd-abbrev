@@ -40,6 +40,58 @@ __gitcmdabbrev_bdate() {
     echo "$y$m$d"
 }
 
+#   Some gitcmd-abbrev commands (mainly regarding logging) allow "cargs", a
+#   first argument starting with a comma followed by letters indicating
+#   options to add to the Git command. This should be called with:
+#
+#       __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+#
+#   For the first function that calls __gitcmdabbrev_cparse() as above, the
+#   global var $__gitcmdabbrev_cargs will be cleared and then set to the
+#   expanded comma-args, if any are present. If it calls further functions
+#   that use __gitcmdabbrev_cparse(), it MUST pass ',' as the first
+#   argument to have the called functions preserve any existing
+#   $__gitcmdabbrev_cargs value, rather than clearing it.
+#
+#   ONLY the last function in a chain, that actually runs `git`, should add
+#   "$__gitcmdabbrev_cargs[@]" before "$@" in the command line, otherwise.
+#   the arguments will end up being repeated and possibly undoing
+#   themselves (e.g., "--reverse --reverse"). It's called with:
+#
+#       git ... "${__gitcmdabbrev_cargs[@]}" "$@"
+#
+__gitcmdabbrev_cargs=()     # initialise to no comma-args saved
+__gitcmdabbrev_cshift=:     # just doc: __gitcmdabbrev_cparse() always sets it
+__gitcmdabbrev_cparse() {
+    declare -g -a __gitcmdabbrev_cargs
+    declare -g    __gitcmdabbrev_cshift=':'     # default to no-shift
+
+    #   If we have no comma-args, clear any saved args and return no-shift.
+    [[ $# -eq 0 ]] && { __gitcmdabbrev_cargs=(); return 0; }
+
+    #   If we have *only* a comma, preserve current comma-args as they
+    #   were set by one of our callers and return shift to remove the comma.
+    [[ $1  = , ]] && { __gitcmdabbrev_cshift=shift; return 0; }
+
+    #   If we have no comma-args, it's a call by a user so clear the
+    #   comma-args and return no-shift.
+    [[ $1 != ,* ]] && { __gitcmdabbrev_cargs=(); return 0; }
+
+    #   We have comma-args; clear any current ones and set them from
+    #   the comma-args string.
+    __gitcmdabbrev_cargs=()
+    __gitcmdabbrev_cshift=shift     # we will return shift request to remove ,*
+    local c
+    while read c; do case "$c" in
+        ,)  : ;;        # ignore all commas
+        d)  __gitcmdabbrev_cargs+=(--no-decorate);;
+        g)  __gitcmdabbrev_cargs+=(--graph);;
+        r)  __gitcmdabbrev_cargs+=(--reverse);;
+        *)  echo 1>&2 "Bad comma-opt: $c"; return 2
+    esac; done < <(echo -n "$1" | sed -e 's:\(.\):\1\n:g')
+    #   Note that sed correctly handles multibyte chars if locale is set.
+}
+
 ############################################################
 # "Copy" git completion to our custom functions
 
@@ -86,43 +138,56 @@ st9() { st -999 "$@"; }
 
 #   "Full" commit output (multiple lines per commit)
 
-log()  { git log --date=iso "$@"; }
+log()  {
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    git log --date=iso "${__gitcmdabbrev_cargs[@]}" "$@"
+}
 
 logs() {        # full paths of changed files
-    log --compact-summary --stat=999 --stat-graph-width=5 "$@"
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    log , --compact-summary --stat=999 --stat-graph-width=5 "$@"
 }
 
 logp() {        # log with patches
                 # changed paths are truncated in stat, full in diff
-    log --stat -p "$@"
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    log , --stat -p "$@"
 }
 
-logpr() { logp --reverse "$@"; }
+logpr() {
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    logp , --reverse "$@"
+}
 
 logp1() {       # most recent patch
-    logp -1 "$@"
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    logp , -1 "$@"
 }
 
 slp1() {        # most recent patch with leading blank lines for readability
     local i; for i in 1 2 3 4 5; do echo; done
-    logp1 "$@"
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    logp1 , "$@"
 }
 
 #   "Oneline" commit output (1-2 lines per commit)
 
 logb() {        # brief graph of current or specified branches
     # Use `-S` in less to switch to wrapped lines instead of sideways scrolling
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
     LESS="$LESS -SR -X" \
-    log --graph --abbrev-commit --pretty=oneline --decorate=short "$@"
+        log , --abbrev-commit --pretty=oneline --decorate=short "$@"
 }
 
 logab() {       # brief graph of all branches
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
     local exclude_notes='--exclude=refs/notes/\*'
     __gitcmdabbrev_gitver_GE 1.8 || exclude_notes=
-    logb --all $exclude_notes "$@"
+    logb , --graph --all $exclude_notes "$@"
 }
 
 logd() {       # brief graph of this dev branch, related, and main
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
     local refs=()
     __ifref main && refs+=( main )
     __ifref main && refs+=( main@{upstream} )
@@ -135,7 +200,7 @@ logd() {       # brief graph of this dev branch, related, and main
     #   XXX this fails on ref names with spaces in them
     refs+=( $(git rev-parse --symbolic-full-name \
         --branches="dev/*/$desc" --remotes="*/dev/*/$desc") )
-    logb "${refs[@]}" "$@"
+    logb , "${refs[@]}" "$@"
 }
 
 logh() {        # the "head" of the repo
@@ -145,10 +210,12 @@ logh() {        # the "head" of the repo
     #   and limiting the number shown could probably be improved. In
     #   particular, it would be nice to show a bit of HEAD no matter how
     #   old it is.
-    LESS="$LESS -E -X" logab --since '1 week ago' -n 30 "$@";
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    LESS="$LESS -E -X" logab , --since '1 week ago' -n 30 "$@";
 }
 
 logm() {        # brief graph with commit metadata
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
     local sha='%C(auto)%h'
     # Truncated relative works better for quick review than %ad
     local date='%C(green)%<(12,trunc)%ar%C(auto)'
@@ -157,21 +224,23 @@ logm() {        # brief graph with commit metadata
     local subject='%n%C(blue)%s'
 
     local format="$sha $date $author$branches$subject"
-    logb --pretty="tformat:$format" "$@"
+    logb , --pretty="tformat:$format" "$@"
 }
 
 logmn() {       # logm without merges
-    logm --no-merges "$@"
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
+    logm , --no-merges "$@"
 }
 
 logbr() {   # XXX FIXME
+    __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
     local -a argv=("$@")
     local branchref=@
     if [[ ${#argv[@]} -gt 0 ]] && [[ ${argv[-1]} != -* ]]; then
         local branchref="${argv[-1]}"
         unset 'argv[-1]'
     fi
-    logs "${argv[@]}" $(mbase "$branchref").."$branchref"
+    logs , "${argv[@]}" $(mbase "$branchref").."$branchref"
 }
 
 #   Completion
