@@ -23,7 +23,6 @@ Contents:
 - [Other Tools](#other-tools)
 
 
-
 Installation
 ------------
 
@@ -55,16 +54,23 @@ testing in the comments.
 Commands
 --------
 
-For the exact details of what each command does (i.e., to work out the
-traditional `git` command line that is eventually produced), see
-`bin/gitcli-short.bash`.
-
 Almost all commands take the same additional options as the underlying Git
 command, and command line completion is the same as the underlying Git
-command.
+command. However, some commands (mostly those that run `git log`) can
+take "comma-options" as the first argument on the command line. This is
+a comma followed by one or more characters, e.g., `,rd` will log in
+reverse and suppress decoration. The available comma options are:
 
-These commands will tweak the $LESS variable where necessary to produce
+    d   --no-decorate
+    g   --graph
+    r   --reverse
+
+All commands will tweak the $LESS variable where necessary to produce
 prettier output.
+
+Where the documentation below does not suffice, you can examine the actual
+functions in `bin/gitcmd-abbrev.bash` or `set -x` to turn on tracing before
+running the command. (`set +x` will undo the tracing).
 
 ### Terminology Note
 
@@ -113,13 +119,13 @@ prettier output.
   through the commits" review of code. (To review a dev branch, for example,
   you could use `logpr main@{u}..origin/dev/joe/bugfix`.
 
-- `logb`: Brief (one line per commit) graph of current or specified
-  refs. The $LESS variable will have `-RS` appended to enable proper
-  display of colour and turn off line wrapping so that all commits take up
-  one line. (You can scroll left and right to see more of the commit
-  summary line.)
+- `logb`: Brief (one line per commit) log of current or specified refs.
+  (`,g` or `,r` is particularly useful here.) The $LESS variable will have
+  `-RS` appended to enable proper display of colour and turn off line
+  wrapping so that all commits take up one line. (You can scroll left and
+  right to see more of the commit summary line.)
 
-- `logab`: As `logb` but for all heads in the repo.
+- `logab`: As `logb` but graph output for all heads in the repo.
 
 - `logd`: As `logb`, but for the following refs:
   - All of the following that exist:
@@ -133,7 +139,7 @@ prettier output.
 - `logh`: Show "recent" (within a week) changes on all heads.
   (The implementation of this needs to be improved.)
 
-- `logm`: Brief graph with commit metadata, using two lines per commit. The
+- `logm`: Brief log with commit metadata, using two lines per commit. The
   first line gives the abbreviated commit ID, age of the commit, author,
   and ref information. The second line is the commit summary line.
 
