@@ -7,7 +7,8 @@
 #     https://github.com/0cjs/script-compat-utils.git
 #
 set -Eeuo pipefail
-trap 'exitcode=$?; echo 2>&1 "ERROR"; exit $exitcode' ERR
+trap 'ec=$?; echo 1>&2 "ERROR: ec=$ec line=$LINENO cmd=$BASH_COMMAND";
+      exit $ec;' ERR
 
 PROJDIR=$(cd "$(dirname "$0")" && pwd -P)
 
@@ -18,4 +19,4 @@ for i in "$@"; do
     $i "$PROJDIR/bin/gitcmd-abbrev.bash"
 done
 
-echo OK; trap '' ERR
+echo OK
