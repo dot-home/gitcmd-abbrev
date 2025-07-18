@@ -241,7 +241,12 @@ See also above `logp`, `logp1`, `slp1`.
   - With no arguments, display a line for each remote giving the name and
     fetch URL. If the push URL is different, a second line with the name
     and the push URL will be displayed.
-  - With arguments, as `git remote`.
+  - With arguments other than below, as `git remote`.
+  - With `-H` as the first argument, check for remote HEAD branch updates
+    and update local refs to match. This changes the local {remote}/HEAD
+    ref to be the same as the remote and, if there is a local branch of
+    the same name tracking the old {remote}/HEAD, makes it track the new
+    {remote}/HEAD and renames it to the new branch name.
 - `fetch`, `pfetch`
   - With no arguments, fetch from `remotes.default` or, if that's not set,
     all remotes. Then show the current status of the working copy (as `git

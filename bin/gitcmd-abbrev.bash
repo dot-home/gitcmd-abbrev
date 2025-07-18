@@ -504,7 +504,9 @@ rem()   {
     #   fixed 12-column format for repo names, overflowing if necessary.
     column </dev/null 2>/dev/null || format_table=cat
 
-    if [[ ${#@} -gt 0 ]]; then
+    if   [[ $# -gt 0 && $1 = -H ]]; then
+        shift; __gitcmdabbrev_rem_H "$@"
+    elif [[ $# -gt 0 ]]; then
         git remote "$@"
     else
         # List all remotes with their push URLs.
@@ -515,6 +517,34 @@ rem()   {
         done | $format_table
     fi
 }; copy_git_completion rem git remote
+
+__gitcmdabbrev_rem_H() {
+    #   XXX This needs much better testing. In particular, it probably
+    #   fails on HEAD branches that have slashes in them.
+    local remote prefix oldhead oldbranch newhead newbranch
+    for remote in $(git remote); do
+        prefix="refs/remotes/$remote/"
+        oldhead=$(git symbolic-ref "${prefix}HEAD")
+        oldbranch="${oldhead/$prefix/}"
+        echo "───── $remote ($oldbranch)"
+        git fetch -q "$remote"
+        git remote set-head -a "$remote" >/dev/null # always echos current HEAD
+        newhead=$(git symbolic-ref "${prefix}HEAD")
+
+        [[ $oldhead = $newhead ]] && continue
+        echo "HEAD changed: ${oldhead} → ${newhead}"
+
+        oldtrack=$(git rev-parse --symbolic-full-name "$oldbranch@{u}")
+        if [[ $oldtrack = $oldhead ]]; then
+            echo "Changing $oldbranch to track $newhead"
+            git branch --set-upstream-to="$newhead" "$oldbranch"
+
+            newbranch="${newhead/$prefix/}"
+            echo "Renaming $oldbranch to $newbranch"
+            git branch -m "$oldbranch" "$newbranch"
+        fi
+    done
+}
 
 #   Given no args, fetch from remotes.default or, if not set, all remotes.
 #
