@@ -83,7 +83,7 @@ __gitcmdabbrev_cparse() {
 # "Copy" git completion to our custom functions
 
 #   Ensure we have __git_wrap__git_main
-if [[ -n $ZSH_VERSION ]]; then
+if [[ -n ${ZSH_VERSION-} ]]; then
     #   Damn Mac users and their refusal to use bash....
     #   `autoload -Uz compinit && compinit` will set up completion for git,
     #   but this does not give us a __git_wrap__git_main(), so someone who
