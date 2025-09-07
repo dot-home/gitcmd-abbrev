@@ -71,6 +71,10 @@ __gitcmdabbrev_cparse() {
         d)      cargs+=(--no-decorate);;
         g)      cargs+=(--graph);;
         r)      cargs+=(--reverse);;
+                #   Single digits N turn into `-N` arguments (typically the
+                #   number of commits to log). Supporting consecutive
+                #   digits as one arg would be nice, but is a bit complex.
+        [0-9])  cargs+=(-$c);;
         *)      echo 1>&2 "Bad comma-opt: $c"; echo 'return 2;'; return 2;;
     esac; done < <(echo -n "$1" | sed -e 's:\(.\):\1\n:g')
     #   Gnu sed correctly handles multibyte chars if locale is set; it's
