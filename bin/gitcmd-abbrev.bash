@@ -40,19 +40,20 @@ __gitcmdabbrev_bdate() {
     echo "$y$m$d"
 }
 
-#   Some gitcmd-abbrev commands (mainly regarding logging) allow "comma args",
-#   a first argument starting with a comma followed by letters indicating
-#   options to add to the Git command. This should be called with:
+#   Some gitcmd-abbrev commands (mainly regarding logging) allow "comma
+#   args", a first argument starting with a comma followed by a sequence of
+#   characters indicating options to add to the Git command. This should be
+#   called with:
 #
 #       eval $(__gitcmdabbrev_cparse "$@")
 #
-#   This will print code that will set a local $cargs[] array (either empty
-#   or with any generated arguments in it) and shift off the ,* at the front
-#   of $@ if present. The resulting $cargs[] should be placed in front
-#   of $@ for further calls (either to other functions or `git`):
+#   This will print code that will set a local ${cargs[]} array (either
+#   empty or with any generated arguments in it) and shift off the ,* at
+#   the front of $@ if present. The resulting $cargs[] should be placed in
+#   front of $@ for further calls either to other functions or `git` using
+#   a line such as one of the following:
 #
 #       … "${cargs[@]}" "$@"
-#
 #       __gitcmdabbrev_cparse "$@" && $__gitcmdabbrev_cshift || return $?
 #
 #   It's generally advisable when calling other functions that also parse
@@ -66,13 +67,14 @@ __gitcmdabbrev_cparse() {
 
     local c cargs=()
     while read c; do case "$c" in
-        ,)  : ;;        # ignore all commas
-        d)  cargs+=(--no-decorate);;
-        g)  cargs+=(--graph);;
-        r)  cargs+=(--reverse);;
-        *)  echo 1>&2 "Bad comma-opt: $c"; echo 'return 2;'; return 2;;
+        ,)      : ;;  # ignore all commas in the comma-arg
+        d)      cargs+=(--no-decorate);;
+        g)      cargs+=(--graph);;
+        r)      cargs+=(--reverse);;
+        *)      echo 1>&2 "Bad comma-opt: $c"; echo 'return 2;'; return 2;;
     esac; done < <(echo -n "$1" | sed -e 's:\(.\):\1\n:g')
-    #   Note that sed correctly handles multibyte chars if locale is set.
+    #   Gnu sed correctly handles multibyte chars if locale is set; it's
+    #   not clear if MacOS sed does. Perhaps there's a better way to do this.
 
     echo 'shift;'                 # Remove ,* from start of $@
     echo "cargs=(${cargs[@]});"   # set cargs
