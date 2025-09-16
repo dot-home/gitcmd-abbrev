@@ -256,8 +256,10 @@ See also above `logp`, `logp1`, `slp1`.
     above or paths to be ignored. The user is informed for each one
     whether it's being feched or ignored.
   - With arguments, as `git fetch`.
-  - `pfetch` is `fetch --prune --prune-tags` (It has the _p_ at the
-    start, rather than at the end, to improve command-line completion.)
+  - `pfetch` is `fetch --prune` (It has the _p_ at the start, rather than
+    at the end, to improve command-line completion.) Note that this does
+    not prune tags by default, for reasons described in the comment on
+    that function; you may add `--prune-tags` if you want to do this.
 - `pull`: As `git pull --ff-only`. (This keeps you from accidentally
   getting stuck in a complicated merge.)
 - `push`: As `git push`, but does not accept the `-f`/`--force` options.

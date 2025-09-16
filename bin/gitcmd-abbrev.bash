@@ -620,7 +620,16 @@ fetch() {
     [[ $(git rev-parse --is-inside-work-tree) == true ]] && git status -bs
 }; copy_git_completion fetch git fetch
 
-pfetch() { fetch --prune --prune-tags "$@"; }
+#   We do not use --prune-tags on this because it has beahviour that may be
+#   unexpected: it deletes all tags, even those that still exist on the
+#   remote. (This means it deletes locally-created tags!) This is because
+#   tags are always in a local namespace; there is no separate "tracking
+#   tag" namespace as there is with branches. (Tracking branches are safe
+#   to delete because it will not delete any local branches that use that
+#   tracking branch.) The "PRUNING" section of the manpage seems to claim
+#   it does not remove tags that exist on the remote, but that's not the
+#   behaviour we're seeing with Git 2.39.5.
+pfetch() { fetch --prune "$@"; }
 copy_git_completion pfetch git fetch
 
 pull()  { git pull --ff-only "$@"; }; copy_git_completion pull git pull
