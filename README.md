@@ -264,10 +264,12 @@ See also above `logp`, `logp1`, `slp1`.
 - `pushf`: As `git push --force-with-lease`. This also does not accept the
   `-f`/`--force` options; to do that (which is quite dangerous) use `git
   push`.
-- `pushu REMOTE [REF]`: Push the ref _REF_ (default: the current branch) to
-  _REMOTE_ (using the same ref name on _REMOTE_) and set _REF_ to track the
-  remote ref. This will do an `--unset-upstream` if necessary before doing
-  the `--set-upstream`.
+- `pushu [-f] REMOTE [REMOTE-REF]`: Push the current branch to a branch of
+  the same name on _remote,_ or to a branch named _remote-ref_ if given,
+  and set the upstream of the current branch to that. This will refuse to
+  operate if the current branch already has an upstream configured. The
+  `-f` option will override this, removing any currently configured
+  upstream before pushing and configuring the new upstream.
 
 ### Misc.
 

@@ -637,16 +637,25 @@ pushf()         {
     git push --force-with-lease "$@";
 }; copy_git_completion pushf git push
 
-# Create upstream branch in given remote.
-# This will unset any current upstream, if present.
-# XXX This should be able to figure out a default remote.
-#
 pushu()         {
-    # XXX This doesn't properly handle arguments before the <remote>
-    [ -z "$1" ] && { echo 1>&2 "Usage: pushu <remote> [<branch>]"; return 2; }
-    local -a argv=("$1"); shift
-    [ -z "$1" ] && argv+=($(git rev-parse --abbrev-ref=strict HEAD))
-    for i in "$@"; do argv+=("$i"); done
+    local force=false; [[ ${1:-} = -f ]] && { force=true; shift; }
+    [[ -z "${1:-}" ]] && {
+        echo 1>&2 "Usage: pushu [-f] <remote> [<remote-branch>]"
+        return 2
+    }
+    local remote="$1"; shift
+    local lbranch=$(git rev-parse --abbrev-ref=strict HEAD)
+    [[ $lbranch = HEAD ]] && {
+        echo 1>&2 'Error: cannot set upstream because HEAD not on a branch.'
+        return 1
+    }
+    [[ -n "${1:-}" ]] \
+        && { rbranch="$1"; shift; } \
+        || rbranch="$lbranch"
+    if ! $force && git config --get "branch.$lbranch.remote" >/dev/null; then
+        echo 1>&2 'Error: current branch already has upstream set and -f not given.'
+        return 1
+    fi
     git branch --unset-upstream 2>/dev/null || true
-    push --set-upstream "${argv[@]}"
+    git push --set-upstream "$remote" "$lbranch:$rbranch"
 }; copy_git_completion pushu git push
