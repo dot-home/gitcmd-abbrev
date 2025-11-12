@@ -54,6 +54,10 @@ testing in the comments.
 Commands
 --------
 
+Most of these commands are shell functions defined by
+`bin/gitcmd-abbrev.bash`. Those that are instead programs under `bin/` are
+noted with a subscript beta, 'ᵦ', at the end of the command name.
+
 Almost all commands take the same additional options as the underlying Git
 command, and command line completion is the same as the underlying Git
 command. However, some commands (mostly those that run `git log`) can
@@ -213,6 +217,9 @@ See also above `logp`, `logp1`, `slp1`.
 - `coma`: As `com --all`
 - `cam`: As `com --amend`
 - `gsub`: As `git submodule`.
+- `gctr`ᵦ: Git commit trailer line generation. `gctr co fred` will generate
+  a Co-authored-by: line with the value from the most recent Author: line
+  matching "fred". Run `gctr -h` or `gctr --help` for more details.
 
 ### Rebasing (git rebase)
 

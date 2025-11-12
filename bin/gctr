@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+#   gctr - generate Git commit trailer lines
+#
+#   See $USAGE bellow for details.
+#   See also the `git-interpret-trailers` command.
+#
+#   XXX Possibly this should have a parameter to generate trailer lines for
+#   all matches, rather than just the most recent, allowing the user then
+#   to delete the ones he doesn't want.
+#
+set -Eeuo pipefail
+progname=$(basename "$0")
+
+die()   { ec="$1"; shift; echo -e 1>&2 "$progname:" "$@"; exit $ec; }
+udie()  { echo 1>&2 "$USAGE"; die 2 "$@"; }
+
+####################################################################
+
+USAGE="\
+Usage: $progname type match-expr
+  This searches the list of all commit authors from HEAD back to the origin
+commit and prints a trailer line for the first one matching the
+case-insensitive regexp \`match-expr\`. The trailer line is selected by
+specifying one of the following as the \`type\` parameter:
+    co  Co-authored-by:
+    r   Reviewed-by:
+    so  Signed-off-by:
+This is normally used when editing a commit message, via the Vim \`:r!\`
+command or simlar.
+"
+
+#####   Parameter 1: type
+[[ -n ${1:-} ]] || udie "missing trailer type and match-expr"
+case "$1" in
+    -h|--help)  echo 1>&2 -n "$USAGE"; exit 0;;
+    co)     trailer='Co-authored-by:';;
+    r)      trailer='Reviwed-by:';;
+    so)     trailer='Signed-off-by:';;
+    *)      udie "Unknown trailer type: $1";;
+esac; shift
+
+#####   Parameter 2: match-expr
+[[ -n ${1:-} ]] || udie "missing match-expr"
+match_expr="$1"; shift
+
+#   When `git commit` is running, the current working directory is the root
+#   of the repo so with no extra configuration `git authors` will always be
+#   using the correct repo.
+found_match=false
+while IFS= read -r author; do
+    found_match=true
+    echo "$trailer: $author"
+done < <(
+    git log --pretty=short \
+        | sed -ne 's/^Author: //p' \
+        | grep -m 1 -i "$match_expr"
+)
+$found_match || die 1 "no Author: matches found for expr '$match_expr'"
