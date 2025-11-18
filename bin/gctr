@@ -34,9 +34,9 @@ command or simlar.
 [[ -n ${1:-} ]] || udie "missing trailer type and match-expr"
 case "$1" in
     -h|--help)  echo 1>&2 -n "$USAGE"; exit 0;;
-    co)     trailer='Co-authored-by:';;
-    r)      trailer='Reviwed-by:';;
-    so)     trailer='Signed-off-by:';;
+    co)     trailer='Co-authored-by';;
+    r)      trailer='Reviwed-by';;
+    so)     trailer='Signed-off-by';;
     *)      udie "Unknown trailer type: $1";;
 esac; shift
 
