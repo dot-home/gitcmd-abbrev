@@ -5,6 +5,10 @@
 #   See $USAGE bellow for details.
 #   See also the `git-interpret-trailers` command.
 #
+#   Trailer lists:
+#   • https://git-scm.com/docs/SubmittingPatches#commit-trailers
+#   • https://lore.kernel.org/git/60ad75ac7ffca_2ae08208b@natae.notmuch/
+#
 #   XXX Possibly this should have a parameter to generate trailer lines for
 #   all matches, rather than just the most recent, allowing the user then
 #   to delete the ones he doesn't want.
@@ -26,6 +30,7 @@ specifying one of the following as the \`type\` parameter:
     co  Co-authored-by:
     r   Reviewed-by:
     so  Signed-off-by:
+    t   Tested-by:
 This is normally used when editing a commit message, via the Vim \`:r!\`
 command or simlar.
 "
@@ -37,6 +42,7 @@ case "$1" in
     co)     trailer='Co-authored-by';;
     r)      trailer='Reviwed-by';;
     so)     trailer='Signed-off-by';;
+    t)      trailer='Tested-by';;
     *)      udie "Unknown trailer type: $1";;
 esac; shift
 
