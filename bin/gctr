@@ -40,7 +40,7 @@ command or simlar.
 case "$1" in
     -h|--help)  echo 1>&2 -n "$USAGE"; exit 0;;
     co)     trailer='Co-authored-by';;
-    r)      trailer='Reviwed-by';;
+    r)      trailer='Reviewed-by';;
     so)     trailer='Signed-off-by';;
     t)      trailer='Tested-by';;
     *)      udie "Unknown trailer type: $1";;
