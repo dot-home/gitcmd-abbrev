@@ -27,9 +27,9 @@ Usage: $progname type match-expr
 commit and prints a trailer line for the first one matching the
 case-insensitive regexp \`match-expr\`. The trailer line is selected by
 specifying one of the following as the \`type\` parameter:
-    co  Co-authored-by:
+    c   Co-authored-by:
     r   Reviewed-by:
-    so  Signed-off-by:
+    s   Signed-off-by:
     t   Tested-by:
 This is normally used when editing a commit message, via the Vim \`:r!\`
 command or simlar.
@@ -39,11 +39,11 @@ command or simlar.
 [[ -n ${1:-} ]] || udie "missing trailer type and match-expr"
 case "$1" in
     -h|--help)  echo 1>&2 -n "$USAGE"; exit 0;;
-    co)     trailer='Co-authored-by';;
-    r)      trailer='Reviewed-by';;
-    so)     trailer='Signed-off-by';;
-    t)      trailer='Tested-by';;
-    *)      udie "Unknown trailer type: $1";;
+    [Cc]*)      trailer='Co-authored-by';;
+    [Rr]*)      trailer='Reviewed-by';;
+    [Ss]*)      trailer='Signed-off-by';;
+    [Tt]*)      trailer='Tested-by';;
+    *)          udie "Unknown trailer type: $1";;
 esac; shift
 
 #####   Parameter 2: match-expr
