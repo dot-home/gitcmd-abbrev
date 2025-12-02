@@ -104,7 +104,7 @@ else
 fi
 
 copy_git_completion() {
-    type __git_wrap__git_main >/dev/null || return 0
+    type __git_wrap__git_main >/dev/null 2>&1 || return 0
     local command="$1"; shift
     eval "
         function __copy_git_completion::$command {
