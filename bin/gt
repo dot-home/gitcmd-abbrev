@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-#   gctr - generate Git commit trailer lines
+#   gt - generate Git commit trailer lines
 #
 #   See $USAGE bellow for details.
 #   See also the `git-interpret-trailers` command.

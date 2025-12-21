@@ -217,9 +217,9 @@ See also above `logp`, `logp1`, `slp1`.
 - `coma`: As `com --all`
 - `cam`: As `com --amend`
 - `gsub`: As `git submodule`.
-- `gctr`ᵦ: Git commit trailer line generation. `gctr co fred` will generate
+- `gt`ᵦ: Git commit trailer line generation. `gt co fred` will generate
   a Co-authored-by: line with the value from the most recent Author: line
-  matching "fred". Run `gctr -h` or `gctr --help` for more details.
+  matching "fred". Run `gt -h` or `gt --help` for more details.
 
 ### Rebasing (git rebase)
 
