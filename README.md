@@ -58,6 +58,11 @@ Most of these commands are shell functions defined by
 `bin/gitcmd-abbrev.bash`. Those that are instead programs under `bin/` are
 noted with a subscript beta, 'ᵦ', at the end of the command name.
 
+The command names are generally selected to avoid collisions with command
+names from popular (and even some not-so-popular) packages. For example,
+we use `ggr` instead of `ggrep` to avoid conflicting with the GNU grep
+command from the MacOS Brew package.
+
 Almost all commands take the same additional options as the underlying Git
 command, and command line completion is the same as the underlying Git
 command. However, some commands (mostly those that run `git log`) can
@@ -282,9 +287,8 @@ See also above `logp`, `logp1`, `slp1`.
 
 ### Misc.
 
-- `ggrep`: As `git grep`.
-- `gfgrep`: As `ggrep -F` (i.e., without interpreting the pattern as a
-  regex).
+- `ggr`: As `git grep`.
+- `ggf`: As `ggr -F` (i.e., without interpreting the pattern as a regex).
 - `gk [START-COMMITISH]`: Runs `gitk --all`, with the commit at
   _START-COMMITISH_ selected if supplied.
 

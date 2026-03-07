@@ -259,8 +259,8 @@ dif()   { git diff "$@"; }; copy_git_completion dif git diff
 difs()  { dif --cached "$@"; }; copy_git_completion difs git diff
 dift()  { git difftool -y "$@"; }; copy_git_completion dift git difftool
 
-ggrep()         { git grep "$@"; }; copy_git_completion ggrep git grep
-gfgrep()        { ggrep -F "$@"; }; copy_git_completion gfgrep git grep
+ggr()   { git grep "$@"; }; copy_git_completion ggr git grep
+ggf()   { ggr -F "$@"; }; copy_git_completion ggf git grep
 
 gk()            {
     [ -n "$1" ] && { start="--select-commit=$1"; shift; }
