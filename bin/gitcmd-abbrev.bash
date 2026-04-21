@@ -321,12 +321,14 @@ add()       { git add "$@"; }; copy_git_completion add git add
 
 com()       { git commit -v "$@"; }; copy_git_completion com git commit
 coma()      {
-                # If we have changes staged in the index, assume we don't
-                # want to commit unstaged changes.
-                local _a=''
-                git diff-index --quiet --cached HEAD -- && _a='-a'
-                com $_a "$@";
-            }; copy_git_completion coma git commit
+    local warn=()
+    #   Index clean, or working tree clean, or warn.
+    git diff-index --quiet --cached HEAD -- \
+        || git diff-files --quiet \
+        || warn=(--edit \
+                 --message '# Warning: combining staged and unstaged changes')
+    com --all "${warn[@]}" "$@"
+}; copy_git_completion coma git commit
 cam()       { com --amend "$@"; }; copy_git_completion cam git commit
 cpick()     { git cherry-pick "$@"; }; copy_git_completion cpick git cherry-pick
 cpcontinue() { cpick --continue "$@"; }; copy_git_completion cpcontinue git cherry-pick

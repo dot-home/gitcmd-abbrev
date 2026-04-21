@@ -222,7 +222,7 @@ See also above `logp`, `logp1`, `slp1`.
 
 - `add`: As `git add`.
 - `com`: As `git commit -v`.
-- `coma`: As `com --all`
+- `coma`: As `com --all`, but warns if you combine staged and unstaged changes.
 - `cam`: As `com --amend`
 - `gsub`: As `git submodule`.
 - `gt`ᵦ: Git commit trailer line generation. `gt co fred` will generate
