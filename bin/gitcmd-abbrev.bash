@@ -123,8 +123,10 @@ copy_git_completion() {
 ############################################################
 # git status functions
 
-st0() { st -0   "$@"; }
-st9() { st -999 "$@"; }
+sti()   { st --ignored "$@"; }
+stii()  { sti --untracked-files=all "$@"; }
+st0()   { st -0   "$@"; }
+st9()   { st -999 "$@"; }
 
 ############################################################
 # git log functions (completion setup at end)

@@ -105,6 +105,9 @@ running the command. (`set +x` will undo the tracing).
     files, and the current branch and latest commit message summary.
   - Within a CVS checkout it will display the status of that. It should be
     extended to give basic information about other VCS checkouts as well.
+- `sti`: As `st`, but show ignored dirs and files: `st --ignored`.
+- `sti`: As `sti`, but show all ignored files under ignored subdirectories,
+  rather than just the subdirectory: `sti --untracked-files=all`.
 - `st0`, `st9`: Same as `st -0` and `st -999`, respectively.
 
 ### Commmit Graph Display (git log)
