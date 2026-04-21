@@ -288,10 +288,16 @@ See also above `logp`, `logp1`, `slp1`.
   `-f` option will override this, removing any currently configured
   upstream before pushing and configuring the new upstream.
 
+### Searching/grep
+
+- `gg`: As `git grep`.
+- `gf`: As `gg -F` (i.e., without interpreting the pattern as a regex).
+- `gi`: As `gg -i` (ignoring case).
+- `gl`: As `gg -li` (showing just matching filenames and ignoring case;
+  add `--no-ignore case` or use `gg -l` for case sensitivity).
+
 ### Misc.
 
-- `ggr`: As `git grep`.
-- `ggf`: As `ggr -F` (i.e., without interpreting the pattern as a regex).
 - `gk [START-COMMITISH]`: Runs `gitk --all`, with the commit at
   _START-COMMITISH_ selected if supplied.
 

@@ -261,8 +261,10 @@ dif()   { git diff "$@"; }; copy_git_completion dif git diff
 difs()  { dif --cached "$@"; }; copy_git_completion difs git diff
 dift()  { git difftool -y "$@"; }; copy_git_completion dift git difftool
 
-ggr()   { git grep "$@"; }; copy_git_completion ggr git grep
-ggf()   { ggr -F "$@"; }; copy_git_completion ggf git grep
+gg()    { git grep "$@"; };     copy_git_completion gg git grep
+gf()    { gg -F "$@"; };        copy_git_completion gf git grep
+gi()    { gg -i "$@"; };        copy_git_completion gi git grep
+gl()    { gg -li "$@"; };       copy_git_completion gl git grep
 
 gk()            {
     [ -n "$1" ] && { start="--select-commit=$1"; shift; }
