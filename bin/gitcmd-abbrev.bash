@@ -1,7 +1,22 @@
 #   Function (command) definitions for shortened Git commands.
 #   `source` this file in your ~/.bashrc.
 
+#   `contains val args` returns 0/1 if `val` does/does not match any value
+#   in args. (typically used as `contains 'a b c' "${anarray[@]}".
+__gca_contains() {
+    local target="$1"; shift
+    local x; for x in "$@"; do
+        [[ $x == $target ]] && return 0
+    done
+    return 1
+}
+
 #   Is Git version on this host >= given version?
+#          Debian 12   2.39.5
+#          Debian 13   2.47.3
+#       Ubuntu 24.04   2.43.0
+#       Ubuntu 26.04   2.53.0
+#               Arch ≥ 2.53.0
 __gitcmdabbrev_gitver_GE() {
     local vs=($(git --version | sed -e 's/git version //' -e 's/\./ /g'))
     local ws=($(echo "$@" | sed -e 's/\./ /g'))
@@ -169,10 +184,21 @@ slp1() {        # most recent patch with leading blank lines for readability
 
 logb() {        # brief graph of current or specified branches
     eval $(__gitcmdabbrev_cparse "$@")
+    local format=(--pretty=oneline)
+    #   • prefix= etc. for %(decorate …) appear in 2.42.1 (we think) and
+    #     definitely 2.43.
+    #   • 9 columns in prefix matches --abbrev=9 below, though on a per-commit
+    #     basis Git will add extra chars to ensure prefix is unique.
+    __gitcmdabbrev_gitver_GE 2.43 && format=(
+        '--pretty=format:%C(auto)%(decorate:prefix=        ▼ ,suffix=%n,pointer=→)%h %s'
+    )
+    #   But we remove decoration here if either ,d or --no-decorate
+    #   supplied because --no-decorate does not suppress %d in a format.
+    __gca_contains --no-decorate "${cargs[@]}" "$@" && format=(
+        '--pretty=format:%C(auto)%h %s'
+    )
     # Use `-S` in less to switch to wrapped lines instead of sideways scrolling
-    LESS="$LESS -SR -X" \
-        log , --abbrev-commit --pretty=oneline --decorate=short \
-        "${cargs[@]}" "$@"
+    LESS="$LESS -SR -X" log , --abbrev=9 "${cargs[@]}" "${format[@]}" "$@"
 }
 
 logab() {       # brief graph of all branches
