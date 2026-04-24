@@ -139,7 +139,7 @@ running the command. (`set +x` will undo the tracing).
 
 - `logab`: As `logb` but graph output for all heads in the repo.
 
-- `logd`: As `logb`, but for the following refs:
+- `logd`: As `logb`, but for the following refs (and graph output):
   - All of the following that exist:
     `main`, `main@{upstream}`, `master`, `master@{upstream}`.
   - The current HEAD and, if it has a tracking ref, its tracking ref.

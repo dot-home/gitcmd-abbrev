@@ -222,7 +222,7 @@ logd() {       # brief graph of this dev branch, related, and main
     #   XXX this fails on ref names with spaces in them
     refs+=( $(git rev-parse --symbolic-full-name \
         --branches="dev/*/$desc" --remotes="*/dev/*/$desc") )
-    logb , "${refs[@]}" "${cargs[@]}" "$@"
+    logb ,g "${refs[@]}" "${cargs[@]}" "$@"
 }
 
 logh() {        # the "head" of the repo
