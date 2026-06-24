@@ -291,6 +291,26 @@ gg()    { git grep "$@"; };     copy_git_completion gg git grep
 gf()    { gg -F "$@"; };        copy_git_completion gf git grep
 gi()    { gg -i "$@"; };        copy_git_completion gi git grep
 gl()    { gg -li "$@"; };       copy_git_completion gl git grep
+ge()    {
+    local edit="${VISUAL:-${EDITOR:-}}"
+    [[ -z $edit ]] && { echo 1>&2 '$VISUAL and $EDITOR not set.'; return 1; }
+    local v=; [[ $edit = *vi* ]] && v=vi        # set when we're using a vi
+    #   Ensure the command runs successfully, or error now if it doesn't.
+    gl "$@" >/dev/null || return $?
+    #   A somewhat poor hack to get the pattern out, skipping options.
+    local pat= arg; for arg in "$@"; do
+        [[ $arg = -* ]] && continue
+        pat=$(echo "$arg" | tr '[:upper:]' '[:lower:]')   # Bash-3 compatible.
+        break
+    done
+    #   An array handles filenames with spaces, etc. No mapfile in MacOS.
+    local file files=(); while IFS= read -r file || [[ -n $file ]]; \
+        do files+=("$file"); done < <(gl "$@")
+    #   Vim must be set to start of file before the search or it may pause
+    #   with an error if it starts at a remembered position that would make
+    #   search wrap. Note the \c ignorecase because `gl` ignores case.
+    "$edit" ${v++:0} ${v+"+/\\c$pat"} "${files[@]}"
+}
 
 gk()            {
     [ -n "$1" ] && { start="--select-commit=$1"; shift; }

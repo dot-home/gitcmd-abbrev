@@ -295,6 +295,10 @@ See also above `logp`, `logp1`, `slp1`.
 - `gi`: As `gg -i` (ignoring case).
 - `gl`: As `gg -li` (showing just matching filenames and ignoring case;
   add `--no-ignore case` or use `gg -l` for case sensitivity).
+- `ge`: Invoke $VISUAL (if set) or $EDITOR on the output of `gl`.
+  If the editor name contains the string 'vi' search commands will be
+  added to the command line to start you on the first line matching the
+  pattern.
 
 ### Misc.
 
