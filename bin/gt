@@ -27,6 +27,7 @@ Usage: $progname type match-expr
 commit and prints a trailer line for the first one matching the
 case-insensitive regexp \`match-expr\`. The trailer line is selected by
 specifying one of the following as the \`type\` parameter:
+    a   Assisted-by:                # for \"AI\" e.g. 'Claude Opus 4.8'
     c   Co-authored-by:
     r   Reviewed-by:
     s   Signed-off-by:
@@ -39,6 +40,7 @@ command or simlar.
 [[ -n ${1:-} ]] || udie "missing trailer type and match-expr"
 case "$1" in
     -h|--help)  echo 1>&2 -n "$USAGE"; exit 0;;
+    [Aa]*)      trailer='Assisted-by';;
     [Cc]*)      trailer='Co-authored-by';;
     [Rr]*)      trailer='Reviewed-by';;
     [Ss]*)      trailer='Signed-off-by';;
@@ -62,4 +64,7 @@ done < <(
         | sed -ne 's/^Author: //p' \
         | grep -m 1 -i "$match_expr"
 )
-$found_match || die 1 "no Author: matches found for expr '$match_expr'"
+$found_match || {
+    echo "$trailer: "
+    die 1 "no Author: matches found for expr '$match_expr'"
+}
