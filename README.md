@@ -229,12 +229,13 @@ See also above `logp`, `logp1`, `slp1`.
   a Co-authored-by: line with the value from the most recent Author: line
   matching "fred". Run `gt -h` or `gt --help` for more details.
 
-### Rebasing (git rebase)
+### Rebasing (git rebase) and related commands
 
+- `grabort`: As `git rebase --abort`, but will also abort `am`,
+  `cherry-pick`, `revert` and `merge`.
 - `gr`: As `git rebase`
 - `grmu`: As `git rebase … master@{upstream}`. (XXX this needs to be fixed
   to use the default head, so it works with `main` as well.)
-- `grabort`: As `git rebase --abort`.
 - `grcontinue`: As `git rebase --continue`.
 - `grskip`: As `git rebase --skip`.
 - `gri`, `grim`: Do a `git rebase -i`. `gri` defaults to the last ten
