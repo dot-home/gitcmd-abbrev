@@ -507,9 +507,9 @@ __gca_act() {
     else echo "nothing to ${action#--}" >&2; return 1
     fi
 }
-grabort()     { __gca_act --abort    "$@"; }
-grcontinue()  { __gca_act --continue "$@"; }
-grskip()      { __gca_act --skip     "$@"; }
+gabort()      { __gca_act --abort    "$@"; }
+gcontinue()   { __gca_act --continue "$@"; }
+gskip()       { __gca_act --skip     "$@"; }
 gri()           {
     local arg=${1:-10}                  # default: 10 commits back
     [ $arg -lt 1000 ] 2>/dev/null \
@@ -517,7 +517,7 @@ gri()           {
         || git rebase -i "$arg^"
 }
 grim()          { git rebase -i "$(mbase)" "$@"; }
-for f in gr grm grabort grcontinue grskip gri grim; do
+for f in gr grm gabort gcontinue gskip gri grim; do
     copy_git_completion $f git rebase
 done
 
