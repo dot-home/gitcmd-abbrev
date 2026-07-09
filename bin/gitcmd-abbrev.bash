@@ -506,8 +506,27 @@ grabort() {
     else echo 'grabort: nothing to abort' >&2; return 1
     fi
 }
-grcontinue()    { git rebase --continue "$@"; }
-grskip()        { git rebase --skip "$@"; }
+grcontinue() {
+    local g; g=$(git rev-parse --git-dir) || return
+    if   [[ -d $g/rebase-merge || -d $g/rebase-apply ]]; then
+        if   [[ -f $g/rebase-apply/applying ]]; then git am     --continue "$@"
+        else                                         git rebase --continue "$@"
+        fi
+    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick --continue "$@"
+    elif [[ -f $g/REVERT_HEAD      ]]; then git revert      --continue "$@"
+    else echo 'grcontinue: nothing to continue' >&2; return 1
+    fi
+}
+grskip() {
+    local g; g=$(git rev-parse --git-dir) || return
+    if   [[ -d $g/rebase-merge || -d $g/rebase-apply ]]; then
+        if   [[ -f $g/rebase-apply/applying ]]; then git am     --skip "$@"
+        else                                         git rebase --skip "$@"
+        fi
+    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick --skip "$@"
+    else echo 'grskip: nothing to skip' >&2; return 1
+    fi
+}
 gri()           {
     local arg=${1:-10}                  # default: 10 commits back
     [ $arg -lt 1000 ] 2>/dev/null \
