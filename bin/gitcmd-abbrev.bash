@@ -494,39 +494,22 @@ mergeff()       { git merge --ff-only "$@"; }   # Should be `integrate`?
 
 gr()            { git rebase "$@"; }
 grmu()          { git rebase "$@" main@{upstream}; }
-grabort() {
-    local g; g=$(git rev-parse --git-dir) || return     # can print error msg
-    if   [[ -d $g/rebase-merge || -d $g/rebase-apply ]]; then
-        if   [[ -f $g/rebase-apply/applying ]]; then git am     --abort "$@"
-        else                                         git rebase --abort "$@"
-        fi
-    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick --abort "$@"
-    elif [[ -f $g/REVERT_HEAD      ]]; then git revert      --abort "$@"
-    elif [[ -f $g/MERGE_HEAD       ]]; then git merge       --abort "$@"
-    else echo 'grabort: nothing to abort' >&2; return 1
-    fi
-}
-grcontinue() {
+__gca_act() {
+    local action="$1"; shift
     local g; g=$(git rev-parse --git-dir) || return
     if   [[ -d $g/rebase-merge || -d $g/rebase-apply ]]; then
-        if   [[ -f $g/rebase-apply/applying ]]; then git am     --continue "$@"
-        else                                         git rebase --continue "$@"
+        if   [[ -f $g/rebase-apply/applying ]]; then git am     "$action" "$@"
+        else                                         git rebase "$action" "$@"
         fi
-    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick --continue "$@"
-    elif [[ -f $g/REVERT_HEAD      ]]; then git revert      --continue "$@"
-    else echo 'grcontinue: nothing to continue' >&2; return 1
+    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick "$action" "$@"
+    elif [[ -f $g/REVERT_HEAD       ]]; then git revert      "$action" "$@"
+    elif [[ -f $g/MERGE_HEAD        ]]; then git merge       "$action" "$@"
+    else echo "nothing to ${action#--}" >&2; return 1
     fi
 }
-grskip() {
-    local g; g=$(git rev-parse --git-dir) || return
-    if   [[ -d $g/rebase-merge || -d $g/rebase-apply ]]; then
-        if   [[ -f $g/rebase-apply/applying ]]; then git am     --skip "$@"
-        else                                         git rebase --skip "$@"
-        fi
-    elif [[ -f $g/CHERRY_PICK_HEAD ]]; then git cherry-pick --skip "$@"
-    else echo 'grskip: nothing to skip' >&2; return 1
-    fi
-}
+grabort()     { __gca_act --abort    "$@"; }
+grcontinue()  { __gca_act --continue "$@"; }
+grskip()      { __gca_act --skip     "$@"; }
 gri()           {
     local arg=${1:-10}                  # default: 10 commits back
     [ $arg -lt 1000 ] 2>/dev/null \
