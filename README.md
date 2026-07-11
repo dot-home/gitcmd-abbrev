@@ -40,7 +40,7 @@ Then add `source gitcmd-abbrev.bash` to your `~/.bashrc`.
 
     mkdir -p ~/.home
     cd ~/.home
-    git clone https://github.com/dot-home/_dot-home.git     # Core system
+    git clone https://github.com/dot-home/dot-home.git      # Core system
     git clone https://github.com/dot-home/gitcmd-abbrev.git # This repo
     ~/.home/_dot-home/bin/dot-home-setup
 
