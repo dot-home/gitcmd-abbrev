@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+#   setup-fork - configure a (usually GitHub) development fork
+#
+#   Fork repos created on GitHub, GitLab etc. usually have a copy of the
+#   `main` or other HEAD branch from the upstream; this is annoying and
+#   unnecessary.
+#   • This creates a new orphan `fork` branch with a single commit
+#     containing a README explaining this fork and its source; this makes
+#     for a nice display in the GitHub/etc. web interface.
+#   • The lack of a second branch named `main` (or whatever) means that
+#     you need not sync it with the upstream and when you need to you can
+#     check out the upstream branch as `git checkout main` rather than
+#     having to do further typing to choose between the two `main`s.
+#
+set -Eeuo pipefail
+
+PROGNAME=$(basename "$0")
+die()   { local ec=$1; shift; warn "$@"; exit $ec; }
+warn()  { echo 1>&2 "$PROGNAME:" "$@"; }
+
+ref_exists() {
+    local refname="$1"; shift
+    git show-ref --verify --quiet "refs/heads/$refname"
+}
+
+checkedout_ref() {
+    git symbolic-ref --quiet --short HEAD
+}
+
+####################################################################
+
+upst_remote=upstream      # Must be remote name of upstream whence we forked.
+upst_url=                 # URL of upstream, for documentation.
+upst_head=                # Name of HEAD branch on upstream.
+fork_branch=fork          # Name of our "this is a fork repo" branch.
+
+#   Set CWD to root of repo.
+root=$(git rev-parse --show-toplevel) || exit 1     # message already printed
+command cd -- "$root" || die 1 "Cannot cd to '$root'"
+
+#   Ensure we have the upstream remote, and find its HEAD branch.
+upst_url=$(git remote get-url $upst_remote 2>/dev/null || true)
+[[ -n $upst_url ]] || die 1 \
+    "'$upst_remote' remote not found; please name your upstream remote '$upst_remote'"
+upst_head=$(git symbolic-ref refs/remotes/$upst_remote/HEAD --short)
+upst_head=${upst_head#"$upst_remote"/}
+echo "Upstream URL:  $upst_url"
+echo "Upstream HEAD: $upst_head"
+
+#   If we have no fork branch, set it up.
+echo "───── Building branch $fork_branch"
+if ref_exists "$fork_branch"; then
+    warn "Local '$fork_branch' branch exists; assuming already set up."
+else
+    git checkout --orphan $fork_branch
+    git rm -rf . || true
+    cat >README.md <<_____
+This is a GitHub development fork of <$upst_url>.
+It contains only $(id -un)'s dev branches.
+_____
+    git add README.md
+    git commit \
+        -m 'README: Indicate that this is a GitHub development fork'
+fi
+
+#   Remove our local copy of the upstream's head
+echo "───── Checking local $upst_head"
+if ref_exists "$upst_head"; then
+    echo "Exists, removing."
+    [[ $(checkedout_ref) == $upst_head ]] && git checkout $fork_branch --
+    git branch -D "$upst_head" || die 1 "Unable to remove branch $upst_head"
+fi
+
+echo "───── $fork_branch branch setup complete"
+cat <<_____
+You now need to do the following with the fork remote:
+1. Push this fork branch to it.
+2. Set $fork_branch to the default branch (HEAD).
+3. Remove branch $upst_head.
+_____

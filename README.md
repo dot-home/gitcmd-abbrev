@@ -309,6 +309,9 @@ See also above `logp`, `logp1`, `slp1`.
 
 ### Repository Maintenance
 
+- `git setup-fork`: Set up a `fork` branch to be used as HEAD branch in
+  a GitHub/GitLab/etc. fork describing what the repo is. See the header
+  comments in [`bin/git-setup-fork`] for more information.
 - `gpack`: Do a garbage collection (`git gc`) and then pack the repo down
   to the minimum number of files, removing all loose object files and
   similar. Any arguments are passed on to `git gc` so you may use, e.g.,
@@ -325,3 +328,4 @@ Other Tools
 
 <!-------------------------------------------------------------------->
 [dustin/bindir]: https://github.com/dustin/bindir
+[`bin/git-setup-fork`]: ./bin/git-setup-fork
