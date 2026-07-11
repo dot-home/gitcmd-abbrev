@@ -60,7 +60,7 @@ noted with a subscript beta, 'ᵦ', at the end of the command name.
 
 The command names are generally selected to avoid collisions with command
 names from popular (and even some not-so-popular) packages. For example,
-we use `ggr` instead of `ggrep` to avoid conflicting with the GNU grep
+we use `gg` instead of `ggrep` to avoid conflicting with the GNU grep
 command from the MacOS Brew package.
 
 Almost all commands take the same additional options as the underlying Git
@@ -73,6 +73,7 @@ reverse and suppress decoration. The available comma options are:
     d   --no-decorate
     g   --graph
     r   --reverse
+    N   -N                  # where N is an integer 0–9
 
 All commands will tweak the $LESS variable where necessary to produce
 prettier output.
@@ -159,9 +160,9 @@ running the command. (`set +x` will undo the tracing).
 
 ### Other Commit Information Display (git shortlog)
 
-- `gauthors`: Show all authors and their commit counts for the commit range
-  given (default `@`, i.e., all commits from HEAD back to the first
-  commit).
+- `git authors`, `gauthors`: Show all authors and their commit counts for
+  the commit range given (default `@`, i.e., all commits from HEAD back to
+  the first commit).
 
 ### Ref (Branch) Information (git branch/checkout/etc.)
 
