@@ -232,13 +232,11 @@ See also above `logp`, `logp1`, `slp1`.
 
 ### Rebasing (git rebase) and related commands
 
-- `gcontinue`, `gabort`, `gskip`: Run `--continue`, `--abort` or `--skip` for
+- `cont`, `abort`, `skip`: Run `--continue`, `--abort` or `--skip` for
   any currently running `rebase`, `merge`, `cherry-pick`, `revert` or `am`.
 - `gr`: As `git rebase`
 - `grmu`: As `git rebase … master@{upstream}`. (XXX this needs to be fixed
   to use the default head, so it works with `main` as well.)
-- `gcontinue`: As `git rebase --continue`.
-- `gskip`: As `git rebase --skip`.
 - `gri`, `grim`: Do a `git rebase -i`. `gri` defaults to the last ten
   commits; you may give it a number for a different number of commits, or
   any ref and it will start at that ref. `grim` starts at the first commit
@@ -246,7 +244,6 @@ See also above `logp`, `logp1`, `slp1`.
   development branch.)
 - `grwhere`
 - `cpick`: As `git cherry-pick`.
-- `cpcontinue`: As `cpcick --continue`.
 
 - `mergeff`: As `git merge --ff-only`.
 
